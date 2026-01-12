@@ -4,3 +4,9 @@ export interface MenuItem{
     description: string;
     price: number;
 };
+
+export interface MenuSection{
+    id: number,
+    title: string,
+    items: MenuItem[];
+}

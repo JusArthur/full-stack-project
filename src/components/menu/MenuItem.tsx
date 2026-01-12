@@ -1,5 +1,5 @@
 import React from "react";
-import type { MenuItem as MenuItemType } from "./menu";
+import type { MenuItem as MenuItemType } from "./types/menu";
 
 interface Props {
     item: MenuItemType;

@@ -22,7 +22,7 @@ export function Navigation() {
       <div className="nav__inner">
         <a className="nav__brand" href="/" aria-label="Team Hortons home">
           <span className="nav__logo" aria-hidden="true">
-            ☕
+            ☕☕
           </span>
           <span className="nav__title">Team Hortons</span>
         </a>

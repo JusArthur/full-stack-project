@@ -48,35 +48,35 @@ The following Kanban items were completed or contributed to during this sprint:
 - **G.2: Pick a Theme**  
   *Contributors:* Team
 
-- **0.1: Set Up CSS Framework**  
+- **O.1: Set Up CSS Framework**  
   *Contributors:* Team
 
-- **T.1: Set Up Project Git Repository (PO)**  
+- **T.1: Set Up Project Git Repository (P0)**  
   *Contributor:* Justin Xia
 
-- **Project Initialization (PO)**  
+- **T.2: Project Initialization (P0)**  
   *Contributor:* Justin Xia
-
-- **T.4: App Integration (P2)**  
-  *Contributor:* Fan Luo & Yunfei
 
 - **T.3: Project README (P1)**  
   *Contributor:* Fan Luo
 
+- **T.4: App Integration (P2)**  
+  *Contributor:* Fan Luo & Yunfei
+
 - **T.5: App Stylesheet and Style Guide (P2)**  
   *Contributors:* Team (written by Yunfei Wu)
 
-- **T.6: Team Vercel Account and Management (PO)**  
+- **T.6: Team Vercel Account and Management (P0)**  
   *Contributor:* Justin Xia (with team support)
 
-- **1.1: High-Level Components (P1)**  
+- **I.1: High-Level Components (P1)**  
   *Contributors:*  
   - Yunfei Wu: Header  
   - Fan Luo: Footer  
   - Justin Xia & Fan Luo: Menu  
   Team members collaborated and assisted each other with blockers.
 
-- **1.2: Styling (P2)**  
+- **I.2: Styling (P2)**  
   *Contributors:* Team  
   Each member styled their own components using the Tailwind Framework.
 

@@ -1,23 +1,22 @@
+import { NavLink } from "react-router-dom";
+
 type NavItem = {
   id: string;
   label: string;
-  href: string;
+  to: string;
 };
 
 export function Navigation() {
   const navItems: NavItem[] = [
-    { id: "home", label: "Home", href: "/" },
-    { id: "menu", label: "Menu", href: "/menu" },
-    { id: "orders", label: "Orders", href: "/orders" },
+    { id: "home", label: "Home", to: "/" },
+    { id: "menu", label: "Menu", to: "/menu" },
+    { id: "orders", label: "Orders", to: "/orders" },
   ];
-
-  const currentPageId = "menu";
 
   return (
     <section className="navigation">
       <nav
         aria-label="Primary navigation"
-        // CHANGE BEM -> Tailwind
         className="bg-[#C8102E] text-white"
       >
         <a
@@ -27,11 +26,9 @@ export function Navigation() {
           Skip to content
         </a>
 
-        <div
-          className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3"
-        >
-          <a
-            href="/"
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
+          <NavLink
+            to="/"
             aria-label="Team Hortons home"
             className="inline-flex items-center gap-2 font-extrabold tracking-wide no-underline text-inherit"
           >
@@ -46,29 +43,29 @@ export function Navigation() {
             >
               Team Hortons
             </span>
-          </a>
+          </NavLink>
 
           <ul
             className="m-0 hidden list-none items-center gap-6 p-0 sm:flex"
           >
             {navItems.map((item) => (
-              <li
-                key={item.id}
-                className=""
-              >
-                <a
-                  href={item.href}
-                  aria-current={item.id === currentPageId ? "page" : undefined}
-                  className="rounded px-2 py-1 text-sm font-semibold no-underline text-inherit hover:bg-white/10 aria-[current=page]:bg-white/15 aria-[current=page]:underline aria-[current=page]:underline-offset-8"
+              <li key={item.id}>
+                <NavLink
+                  to={item.to}
+                  className={({ isActive }) =>
+                    [
+                      "rounded px-2 py-1 text-sm font-semibold no-underline text-inherit hover:bg-white/10",
+                      isActive ? "bg-white/15 underline underline-offset-8" : "",
+                    ].join(" ")
+                  }
                 >
                   {item.label}
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>
 
           <div
-            // CHANGED: Tailwind layout
             className="flex items-center gap-3"
           >
             <button
@@ -88,13 +85,17 @@ export function Navigation() {
           <ul className="m-0 flex list-none flex-col gap-2 p-0">
             {navItems.map((item) => (
               <li key={`${item.id}-mobile`}>
-                <a
-                  href={item.href}
-                  aria-current={item.id === currentPageId ? "page" : undefined}
-                  className="block rounded px-2 py-2 text-sm font-semibold no-underline text-inherit hover:bg-white/10 aria-[current=page]:bg-white/15"
+                <NavLink
+                  to={item.to}
+                  className={({ isActive }) =>
+                    [
+                      "block rounded px-2 py-2 text-sm font-semibold no-underline text-inherit hover:bg-white/10",
+                      isActive ? "bg-white/15" : "",
+                    ].join(" ")
+                  }
                 >
                   {item.label}
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>

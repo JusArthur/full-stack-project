@@ -1,18 +1,17 @@
-import "./App.css";
-import Footer from "./components/layout/Footer";
-import { Header } from "./components/layout/Header";
-import Menu from "./components/menu/Menu";
+import { Routes, Route } from "react-router-dom";
+import { Layout } from "./components/layout/Layout";
+import { HomePage } from "./components/pages/HomePage";
+import { MenuPage } from "./components/pages/MenuPage";
+import { OrdersPage } from "./components/pages/OrdersPage";
 
-function App() {
+export default function App() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main id="main" className="flex-1">
-        <Menu />
-      </main>
-      <Footer />
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="menu" element={<MenuPage />} />
+        <Route path="orders" element={<OrdersPage />} />
+      </Route>
+    </Routes>
   );
 }
-
-export default App;

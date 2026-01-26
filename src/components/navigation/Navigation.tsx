@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import favicon from "../../../public/favicon.png";
 
 type NavItem = {
   id: string;
@@ -15,10 +16,7 @@ export function Navigation() {
 
   return (
     <section className="navigation">
-      <nav
-        aria-label="Primary navigation"
-        className="bg-[#C8102E] text-white"
-      >
+      <nav aria-label="Primary navigation" className="bg-[#C8102E] text-white">
         <a
           href="#main"
           className="absolute left-[-999px] top-0 focus:left-4 focus:top-3 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2 focus:text-[#3B2316]"
@@ -32,22 +30,16 @@ export function Navigation() {
             aria-label="Team Hortons home"
             className="inline-flex items-center gap-2 font-extrabold tracking-wide no-underline text-inherit"
           >
-            <span
+            <img
+              src={favicon}
+              alt="Team Hortons logo"
+              className="h-10 w-10 object-contain"
               aria-hidden="true"
-              className="text-lg"
-            >
-              ☕
-            </span>
-            <span
-              className="text-base sm:text-lg"
-            >
-              Team Hortons
-            </span>
+            />
+            <span className="text-base sm:text-lg">Team Hortons</span>
           </NavLink>
 
-          <ul
-            className="m-0 hidden list-none items-center gap-6 p-0 sm:flex"
-          >
+          <ul className="m-0 hidden list-none items-center gap-6 p-0 sm:flex">
             {navItems.map((item) => (
               <li key={item.id}>
                 <NavLink
@@ -55,7 +47,9 @@ export function Navigation() {
                   className={({ isActive }) =>
                     [
                       "rounded px-2 py-1 text-sm font-semibold no-underline text-inherit hover:bg-white/10",
-                      isActive ? "bg-white/15 underline underline-offset-8" : "",
+                      isActive
+                        ? "bg-white/15 underline underline-offset-8"
+                        : "",
                     ].join(" ")
                   }
                 >
@@ -65,9 +59,7 @@ export function Navigation() {
             ))}
           </ul>
 
-          <div
-            className="flex items-center gap-3"
-          >
+          <div className="flex items-center gap-3">
             <button
               type="button"
               className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#C8102E] hover:bg-[#F7F3E9]"

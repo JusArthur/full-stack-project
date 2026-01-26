@@ -44,7 +44,7 @@ export function PostForm({ onAddPost }: PostFormProps) {
         <div>
           <label
             htmlFor="author"
-            className="block text-sm font-semibold text-[#3B2316]mb-1"
+            className="block text-sm font-semibold text-[#3B2316] mb-1"
           >
             Your Name
           </label>

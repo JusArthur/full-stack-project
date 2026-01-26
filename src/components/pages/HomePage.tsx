@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { PostForm } from "../home/PostFrom";
+import { PostForm } from "../home/PostForm";
 import { PostList } from "../home/PostList";
 import type { CommunityPost } from "../home/types/communitypost";
 

@@ -3,7 +3,7 @@ import { Layout } from "./components/layout/Layout";
 import { HomePage } from "./components/pages/HomePage";
 import { MenuPage } from "./components/pages/MenuPage";
 import { OrdersPage } from "./components/pages/OrdersPage";
-import { CartProvider } from "./components/layout/CartProvider";
+import { CartProvider } from "./components/layout/CartContext";
 
 export default function App() {
   return (

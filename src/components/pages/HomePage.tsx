@@ -1,6 +1,31 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { PostForm } from "../home/PostFrom";
+import { PostList } from "../home/PostList";
+import type { CommunityPost } from "../home/types/communitypost";
 
 export function HomePage() {
+  // Initial dummy state to show the list functionality
+  const [posts, setPosts] = useState<CommunityPost[]>([
+    {
+      id: "1",
+      author: "Team Hortons",
+      content:
+        "Welcome to our new community board! Let us know what you think about our menu.",
+      timestamp: new Date(),
+    },
+  ]);
+
+  // Handler for adding elements
+  const handleAddPost = (newPost: CommunityPost) => {
+    setPosts((prevPosts) => [newPost, ...prevPosts]);
+  };
+
+  // Handler for removing elements
+  const handleRemovePost = (idToDelete: string) => {
+    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== idToDelete));
+  };
+
   return (
     <main id="main" className="mx-auto max-w-6xl px-5 py-10">
       {/* Hero / Landing Section */}
@@ -29,6 +54,24 @@ export function HomePage() {
               Start Order ☕
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Feature Section: Community Board */}
+      <section className="max-w-4xl mx-auto">
+        <div className="text-center mb-10 border-t border-[#E6E0D8] pt-10">
+          <h2 className="text-3xl font-bold text-[#3B2316] mb-3">
+            Community Board
+          </h2>
+          <p className="text-[#3B2316] opacity-70">
+            Leave a note for the team or see what others are saying.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-1 gap-8">
+          <PostForm onAddPost={handleAddPost} />
+
+          <PostList posts={posts} onRemovePost={handleRemovePost} />
         </div>
       </section>
     </main>

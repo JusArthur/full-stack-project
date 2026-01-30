@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useCart } from "../layout/CartContext";
-import { CartDrawer } from "../cart/CartDrawer"; // We will create this next
+import { CartDrawer } from "../cart/CartDrawer"; 
 
 type NavItem = {
   id: string;
@@ -42,8 +42,8 @@ export function Navigation() {
             ))}
           </ul>
 
+
           <div className="flex items-center gap-4">
-            {/* Clickable Cart Icon */}
             <button 
               type="button" 
               onClick={() => setIsCartOpen(true)}
@@ -68,7 +68,6 @@ export function Navigation() {
           </div>
         </div>
 
-        {/* Mobile View */}
         <div className="border-t border-white/15 px-5 py-2 sm:hidden">
           <ul className="m-0 flex list-none flex-col gap-2 p-0">
             {navItems.map((item) => (
@@ -83,7 +82,7 @@ export function Navigation() {
           </ul>
         </div>
       </nav>
-      {/* Small Window (Drawer) */}
+      
       <CartDrawer />
     </section>
   );

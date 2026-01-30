@@ -7,7 +7,7 @@ export function CartDrawer() {
 
   return (
     <div className="fixed inset-0 z-[100] overflow-hidden">
-      {/* Backdrop */}
+
       <div className="absolute inset-0 bg-black/50 transition-opacity" onClick={() => setIsCartOpen(false)} />
       
       <div className="absolute inset-y-0 right-0 flex max-w-full pl-10">

@@ -1,6 +1,6 @@
 import React from "react";
 import type { MenuItem as MenuItemType } from "./types/menu";
-import { useCart } from "../layout/CartContext"; // 1. Import hook
+import { useCart } from "../layout/CartContext";
 
 interface Props {
   item: MenuItemType;
@@ -47,7 +47,7 @@ const MenuItem: React.FC<Props> = ({
         </span>
 
         <div className="flex items-center gap-2">
-            {/* --- NEW ADD TO CART BUTTON --- */}
+
             {variant === 'default' && (
                 <button
                     onClick={() => addToCart(item)}
@@ -58,7 +58,7 @@ const MenuItem: React.FC<Props> = ({
                 </button>
             )}
 
-            {/* Existing Favorite Toggle Button Logic */}
+
             {variant === 'favorite-list' ? (
             <button
                 onClick={onToggleFavorite}

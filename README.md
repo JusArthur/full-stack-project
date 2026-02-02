@@ -38,7 +38,7 @@ This project is a restaurant web app inspired by the Tim Hortons website, create
 
 ---
 
-## Sprint Kanban Contributions
+## Sprint 1 Kanban Contributions
 
 The following Kanban items were completed or contributed to during this sprint:
 
@@ -79,6 +79,37 @@ The following Kanban items were completed or contributed to during this sprint:
 - **I.2: Styling (P2)**  
   *Contributors:* Team  
   Each member styled their own components using the Tailwind Framework.
+
+## Sprint 2 Kanban Contributions
+
+The following Kanban items were completed or contributed to during this sprint:
+
+- **T.1: Multi-page Navigation (P0)**  
+  *Contributor:* Yunfei Wu
+
+- **T.2: Navigation Interface(s) (P2)**  
+  *Contributor:* Yunfei Wu
+
+- **T.3: Shared State Across Pages (P0)**  
+  *Contributor:* Justin Xia
+
+- **I.1: Feature Pages (P1)**  
+  *Contributors:*  
+  - Fan Luo: Home Page  
+  - Justin Xia: Menu Page  
+  - Yunfei Wu: Order Page
+
+- **I.2: Form Component (P1)**  
+  *Contributors:*  
+  - Fan Luo: Home Page  
+  - Justin Xia: Menu Page  
+  - Yunfei Wu: Order Page
+
+- **I.3: Element Addition/Removal (P2)**  
+  *Contributors:*  
+  - Fan Luo: Home Page  
+  - Justin Xia: Menu Page  
+  - Yunfei Wu: Order Page
 
 ## License
 

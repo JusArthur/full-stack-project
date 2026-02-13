@@ -9,8 +9,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   /**
-   * Sprint 3 (T.2)
-   * Cart business logic lives in cartService.
+   * Sprint 3 (I.3/T.2 - Yunfei)
+   * Cart business logic lives in cartService (add/update/remove/totals).
+   * Why: keeps cart rules reusable and testable outside React components.
    * Context remains responsible for state storage and UI triggers (e.g., open drawer).
    */
   const addToCart = (item: MenuItem) => {

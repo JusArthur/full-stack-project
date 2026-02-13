@@ -4,7 +4,13 @@ import { OrderItemRow } from "../orders/OrderItemRow";
 import { useMenuItems } from "../../hooks/useMenuItems";
 
 export function OrdersPage() {
-  // Sprint 3: hook -> repository (menu items)
+  /**
+   * Sprint 3 (I.3 - Yunfei)
+   * Uses hook -> repository architecture:
+   * - useMenuItems (hook) manages UI presentation state and derives filtered menu items
+   * - menuItemRepository (repository) supplies menu data (test data now, API later)
+   * Why: Orders and Menu pages share the same menu source without prop drilling.
+   */
   const { filteredItems, isLoading, error } = useMenuItems();
 
   // I.2 Form state

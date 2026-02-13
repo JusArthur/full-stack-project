@@ -1,4 +1,4 @@
-import { useCart } from "../layout/CartContext";
+import { useCart } from "../layout/useCart";
 
 export function CartDrawer() {
   const { cartItems, isCartOpen, setIsCartOpen, updateQuantity, totalPrice } = useCart();

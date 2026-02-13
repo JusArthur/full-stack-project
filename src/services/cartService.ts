@@ -1,5 +1,5 @@
 import type { MenuItem } from "../components/menu/types/menu";
-import type { CartItem } from "../components/layout/CartContext";
+import type { CartItem } from "../components/layout/CartContextInstance";
 
 /**
  * Cart Service (Sprint 3 - T.2 - Yunfei)

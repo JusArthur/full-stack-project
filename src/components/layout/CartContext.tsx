@@ -1,56 +1,33 @@
-import { createContext, useContext, useState } from 'react';
-import type { ReactNode } from 'react';
-import type { MenuItem } from '../menu/types/menu';
-
-export interface CartItem extends MenuItem {
-  quantity: number;
-}
-
-interface CartContextType {
-  cartItems: CartItem[];
-  addToCart: (item: MenuItem) => void;
-  removeFromCart: (itemId: number) => void;
-  updateQuantity: (itemId: number, delta: number) => void;
-  isCartOpen: boolean;
-  setIsCartOpen: (open: boolean) => void;
-  cartCount: number;
-  totalPrice: number;
-}
-
-const CartContext = createContext<CartContextType | undefined>(undefined);
+import { useState } from "react";
+import type { ReactNode } from "react";
+import type { MenuItem } from "../menu/types/menu";
+import { cartService } from "../../services/cartService";
+import { CartContext, type CartItem } from "./CartContextInstance";
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  /**
+   * Sprint 3 (T.2)
+   * Cart business logic lives in cartService.
+   * Context remains responsible for state storage and UI triggers (e.g., open drawer).
+   */
   const addToCart = (item: MenuItem) => {
-    setCartItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id);
-      if (existing) {
-        return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-        );
-      }
-      return [...prev, { ...item, quantity: 1 }];
-    });
-    // Automatically open the small window when an item is added
+    setCartItems((prev) => cartService.addItem(prev, item));
     setIsCartOpen(true);
   };
 
   const updateQuantity = (itemId: number, delta: number) => {
-    setCartItems((prev) =>
-      prev
-        .map((i) => (i.id === itemId ? { ...i, quantity: Math.max(0, i.quantity + delta) } : i))
-        .filter((i) => i.quantity > 0)
-    );
+    setCartItems((prev) => cartService.updateQuantity(prev, itemId, delta));
   };
 
   const removeFromCart = (itemId: number) => {
-    setCartItems((prev) => prev.filter((i) => i.id !== itemId));
+    setCartItems((prev) => cartService.removeItem(prev, itemId));
   };
 
-  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const cartCount = cartService.getCartCount(cartItems);
+  const totalPrice = cartService.getTotalPrice(cartItems);
 
   return (
     <CartContext.Provider
@@ -68,10 +45,4 @@ export function CartProvider({ children }: { children: ReactNode }) {
       {children}
     </CartContext.Provider>
   );
-}
-
-export function useCart() {
-  const context = useContext(CartContext);
-  if (!context) throw new Error("useCart must be used within a CartProvider");
-  return context;
 }

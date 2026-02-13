@@ -1,6 +1,6 @@
 import React from "react";
 import type { MenuItem as MenuItemType } from "./types/menu";
-import { useCart } from "../layout/CartContext";
+import { useCart } from "../layout/useCart";
 
 interface Props {
   item: MenuItemType;

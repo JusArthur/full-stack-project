@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { useCart } from "../layout/CartContext";
+import { useCart } from "../layout/useCart";
 import { CartDrawer } from "../cart/CartDrawer"; 
 
 type NavItem = {

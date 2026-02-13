@@ -1,36 +1,35 @@
-import React, { useState, useMemo } from "react";
+import React from "react";
 import MenuItem from "./MenuItem";
-import { menuData } from "./data/menuData";
+import { useMenuItems } from "../../hooks/useMenuItems";
 
 const Menu: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const {
+    filteredItems,
+    favoriteItems,
+    searchTerm,
+    setSearchTerm,
+    favorites,
+    toggleFavorite,
+    isLoading,
+    error,
+  } = useMenuItems();
 
-  // Toggle favorite status
-  const toggleFavorite = (id: number) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((favId) => favId !== id) : [...prev, id]
-    );
-  };
+  if (isLoading) {
+    return <p className="text-center py-20 text-gray-500">Loading menu...</p>;
+  }
 
-  // Filter items for the main list based on search
-  const filteredItems = useMemo(() => {
-    return menuData.filter(
-      (item) =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [searchTerm]);
-
-  // Derive favorite items object
-  const favoriteItems: typeof menuData = menuData.filter((item) => favorites.includes(item.id));
+  if (error) {
+    return <p className="text-center py-20 text-red-700">{error}</p>;
+  }
 
   return (
     <div className="max-w-3xl mx-auto my-10 space-y-10 px-4 sm:px-0">
-      
       {/* Search Filter Form */}
       <section className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="search"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           Find your craving
         </label>
         <input
@@ -48,7 +47,9 @@ const Menu: React.FC = () => {
         <section className="bg-[#F7F3E9] p-6 rounded-xl border-2 border-[#C8102E]/20">
           <header className="mb-4 flex items-center gap-2">
             <span className="text-2xl">❤️</span>
-            <h2 className="text-2xl font-serif font-bold text-[#3B2316]">Your Favorites</h2>
+            <h2 className="text-2xl font-serif font-bold text-[#3B2316]">
+              Your Favorites
+            </h2>
           </header>
           <ul className="space-y-4">
             {favoriteItems.map((item) => (
@@ -57,6 +58,7 @@ const Menu: React.FC = () => {
                 item={item}
                 isFavorite={true}
                 onToggleFavorite={() => toggleFavorite(item.id)}
+                variant="favorite-list"
               />
             ))}
           </ul>

@@ -3,18 +3,6 @@ import type { OrderItem } from "../orders/types/order";
 import { OrderItemRow } from "../orders/OrderItemRow";
 import { useMenuItems } from "../../hooks/useMenuItems";
 
-type PresetItem = {
-  id: string;
-  name: string;
-  price: number;
-};
-
-const presetItems: PresetItem[] = [
-  { id: "coffee", name: "Cawfee", price: 2.49 },
-  { id: "donut", name: "Team Bits", price: 1.79 },
-  { id: "sandwich", name: "Breakfast Sandwitch", price: 4.99 },
-];
-
 export function OrdersPage() {
   // Sprint 3: hook -> repository (menu items)
   const { filteredItems, isLoading, error } = useMenuItems();
@@ -35,12 +23,12 @@ export function OrdersPage() {
     return orderItems.reduce((sum, item) => sum + item.price, 0);
   }, [orderItems]);
 
-  const handleAddPreset = (preset: PresetItem) => {
+  const handleAddMenuItem = (item: { id: number; name: string; price: number }) => {
     setOrderItems((oldItems) => {
       const newItem: OrderItem = {
-        id: `${preset.id}-${crypto.randomUUID()}`,
-        name: preset.name,
-        price: preset.price,
+        id: `${item.id}-${crypto.randomUUID()}`,
+        name: item.name,
+        price: item.price,
       };
       return [...oldItems, newItem];
     });
@@ -115,37 +103,23 @@ export function OrdersPage() {
             ) : error ? (
               <p className="text-sm font-semibold text-red-700">{error}</p>
             ) : (
-              filteredItems.slice(0, 6).map((item) => (
+              filteredItems.map((item) => (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() =>
-                    handleAddPreset({
-                      id: String(item.id),
+                    handleAddMenuItem({
+                      id: item.id,
                       name: item.name,
                       price: item.price,
                     })
                   }
-                  className="rounded bg-[#3B2316] px-3 py-2 text-sm font-semibold text-white hover:bg-[#2a190f]"
+                  className="rounded bg-[#C8102E] px-3 py-2 text-sm font-semibold text-white hover:bg-[#a50d25]"
                 >
                   Add {item.name}
                 </button>
               ))
             )}
-          </div>
-
-          {/* Existing preset buttons (kept for safety) */}
-          <div className="mt-4 flex flex-wrap gap-2">
-            {presetItems.map((preset) => (
-              <button
-                key={preset.id}
-                type="button"
-                onClick={() => handleAddPreset(preset)}
-                className="rounded bg-[#C8102E] px-3 py-2 text-sm font-semibold text-white hover:bg-[#a50d25]"
-              >
-                Add {preset.name}
-              </button>
-            ))}
           </div>
 
           <ul className="mt-5 space-y-3">

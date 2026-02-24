@@ -12,6 +12,7 @@ export const postRepository = {
     });
   },
 
+  // Additional methods for adding/deleting posts
   async add(post: CommunityPost): Promise<void> {
     return new Promise((resolve) => {
       postsInMemory = [post, ...postsInMemory];
@@ -19,6 +20,7 @@ export const postRepository = {
     });
   },
 
+  // Delete by ID
   async delete(id: string): Promise<void> {
     return new Promise((resolve) => {
       postsInMemory = postsInMemory.filter((p) => p.id !== id);

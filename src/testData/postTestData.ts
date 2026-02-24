@@ -9,19 +9,19 @@ export const postTestData: CommunityPost[] = [
   },
   {
     id: "2",
-    author: "Emily",
+    author: "Fan Ruo",
     content: "Loving the new donuts at Tim Hortons! 🍩 #SweetTreats",
     timestamp: new Date("2024-06-02T12:30:00Z"),
   },
   {
     id: "3",
-    author: "Michael",
+    author: "Michael B Jordan",
     content: "Morning coffee run complete! ☀️ #CoffeeFirst",
     timestamp: new Date("2024-06-03T08:15:00Z"),
   },
   {
     id: "4",
-    author: "Sarah",
+    author: "Stephen Curry",
     content: "The iced capp is life-changing! 🧊☕ #SummerVibes",
     timestamp: new Date("2024-06-04T14:45:00Z"),
   },
@@ -34,13 +34,13 @@ export const postTestData: CommunityPost[] = [
   },
   {
     id: "6",
-    author: "Sophia",
+    author: "Chris Paul",
     content: "Chilling with a hot chocolate and a good book. 📚☕ #CozyMoments",
     timestamp: new Date("2024-06-06T19:20:00Z"),
   },
   {
     id: "7",
-    author: "James",
+    author: "LeBron",
     content: "Double-double kind of day! ☕ #CanadianClassic",
     timestamp: new Date("2024-06-07T07:50:00Z"),
   },

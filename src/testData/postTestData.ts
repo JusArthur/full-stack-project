@@ -1,6 +1,6 @@
 import type { CommunityPost } from "../components/home/types/communitypost";
 
-export const portTestData: CommunityPost[] = [
+export const postTestData: CommunityPost[] = [
   {
     id: "1",
     author: "Justin",

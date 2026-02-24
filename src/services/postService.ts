@@ -1,15 +1,21 @@
 import type { CommunityPost } from "../components/home/types/communitypost";
 
 export const postService = {
+  // Business logic: Validation
   validatePost(post: CommunityPost): string | null {
-    if (!post.author.trim()) return "Author name is required.";
-    if (post.content.length < 5) return "Message is too short.";
-    return null; // No error
+    if (!post.author || post.author.trim().length === 0) {
+      return "Author name cannot be empty.";
+    }
+    if (!post.content || post.content.trim().length < 5) {
+      return "Message must be at least 5 characters long.";
+    }
+    return null; // Valid
   },
-  
-  formatDate(date: Date): string {
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-    }).format(date);
+
+  // Business logic: Sort by date (newest first)
+  sortPostsByDate(posts: CommunityPost[]): CommunityPost[] {
+    return [...posts].sort((a, b) => 
+      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
   }
 };

@@ -15,4 +15,4 @@ export const postRepository = {
     async delete(id: string): Promise<void> {
         posts = posts.filter(p => p.id !== id);
     }
-}
+};

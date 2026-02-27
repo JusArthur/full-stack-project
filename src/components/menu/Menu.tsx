@@ -1,8 +1,8 @@
-import React from "react";
 import MenuItem from "./MenuItem";
 import { useMenuItems } from "../../hooks/useMenuItems";
+import { usePromotions } from "../../hooks/usePromotions";
 
-const Menu: React.FC = () => {
+const Menu = () => {
   const {
     filteredItems,
     favoriteItems,
@@ -10,16 +10,25 @@ const Menu: React.FC = () => {
     setSearchTerm,
     favorites,
     toggleFavorite,
-    isLoading,
-    error,
+    isLoading: isMenuLoading,
+    error: menuError,
   } = useMenuItems();
 
-  if (isLoading) {
+  /**
+   * Sprint 3 (Justin Xia)
+   * I.3: New / Refactored Component(s)
+   * This component uses the `usePromotions` custom hook to manage the presentation state of promotions.
+   * The hook interacts with `promotionRepository` to fetch external data and `promotionService` to apply 
+   * business logic (verifying if promotions are active), keeping this component focused strictly on UI rendering.
+   */
+  const { promotions, isLoading: isPromoLoading } = usePromotions();
+
+  if (isMenuLoading) {
     return <p className="text-center py-20 text-gray-500">Loading menu...</p>;
   }
 
-  if (error) {
-    return <p className="text-center py-20 text-red-700">{error}</p>;
+  if (menuError) {
+    return <p className="text-center py-20 text-red-700">{menuError}</p>;
   }
 
   return (
@@ -41,6 +50,29 @@ const Menu: React.FC = () => {
           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C8102E] focus:border-[#C8102E] outline-none transition-all"
         />
       </section>
+
+      {/* Promotions Section */}
+      {!isPromoLoading && promotions.length > 0 && (
+        <section className="bg-yellow-50 p-6 rounded-xl border-2 border-yellow-400">
+          <header className="mb-4 flex items-center gap-2">
+            <span className="text-2xl">🔥</span>
+            <h2 className="text-2xl font-serif font-bold text-[#3B2316]">
+              Special Offers
+            </h2>
+          </header>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {promotions.map((promo) => (
+              <li key={promo.id} className="bg-white p-4 rounded-lg shadow-sm border border-yellow-200">
+                <h3 className="text-lg font-bold text-[#C8102E]">{promo.title}</h3>
+                <p className="text-sm text-gray-600 mt-1">{promo.description}</p>
+                <div className="mt-2 text-sm font-semibold text-green-700">
+                  {promo.discountPercentage}% OFF!
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* Favorites List (Conditional Render) */}
       {favoriteItems.length > 0 && (

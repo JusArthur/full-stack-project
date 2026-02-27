@@ -1,4 +1,5 @@
 # Sprint 3 Architecture Documentation
+
 **Author:** Justin Xia
 
 This document outlines the architecture implemented for the Menu Page to satisfy the Hook-Service-Repository pattern. This structure enforces a strict separation of concerns between presentation logic, business logic, and data access.
@@ -6,6 +7,7 @@ This document outlines the architecture implemented for the Menu Page to satisfy
 ## 1. Custom Hooks
 
 ### `useMenuReviews` (and `useMenuItems`)
+
 * **What does this hook do?**
   These hooks act as the state-management and presentation bridge for the UI. For instance, `useMenuReviews` maintains the `reviews` array and `averageRating` in local React state, handles the side effect (`useEffect`) of fetching data when the component mounts, and exposes an `addReview` function to update that state.
 * **How did you decide what logic to include?**
@@ -17,6 +19,7 @@ This document outlines the architecture implemented for the Menu Page to satisfy
 ## 2. Services
 
 ### `menuReviewService` (and `cartService`)
+
 * **What does this service do?**
   It contains strictly reusable business logic. `menuReviewService` calculates the numerical average rating from an array of review objects and validates user input for new reviews (checking rating ranges and comment lengths).
 * **How did you decide what logic to include?**
@@ -27,6 +30,7 @@ This document outlines the architecture implemented for the Menu Page to satisfy
 ## 3. Repositories
 
 ### `menuReviewRepository` (and `menuItemRepository`)
+
 * **What does this repository do?**
   It provides the standard CRUD (Create, Read, Update, Delete) data access methods for our external resources. Currently, it retrieves arrays and filters data from our static `menuReviewsTestData` and `menuItemsTestData` objects.
 * **How did you decide what logic to include?**

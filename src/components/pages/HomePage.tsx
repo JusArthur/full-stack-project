@@ -1,34 +1,17 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PostForm } from "../home/PostForm";
 import { PostList } from "../home/PostList";
-import type { CommunityPost } from "../home/types/communitypost";
+import { useCommunityPosts } from "../../hooks/useCommunityPosts";
 
 export function HomePage() {
-  // Initial dummy state to show the list functionality
-  const [posts, setPosts] = useState<CommunityPost[]>([
-    {
-      id: "1",
-      author: "Team Hortons",
-      content:
-        "Welcome to our new community board! Let us know what you think about our menu.",
-      timestamp: new Date(),
-    },
-  ]);
-
-  // Handler for adding elements
-  const handleAddPost = (newPost: CommunityPost) => {
-    setPosts((prevPosts) => [newPost, ...prevPosts]);
-  };
-
-  // Handler for removing elements
-  const handleRemovePost = (idToDelete: string) => {
-    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== idToDelete));
-  };
+  /**
+   * Using Hook-Service-Repository architecture.
+   * The hook manages state, validation logic, and data access.
+   */
+  const { posts, addPost, removePost, isLoading, error } = useCommunityPosts();
 
   return (
     <main id="main" className="mx-auto max-w-6xl px-5 py-10">
-      {/* Hero / Landing Section */}
       <section className="text-center py-16 md:py-24 bg-white rounded-3xl shadow-xl border border-[#E6E0D8] mb-16 relative overflow-hidden">
         <div className="relative z-10 px-6">
           <h1 className="text-5xl md:text-7xl font-extrabold text-[#3B2316] mb-6 tracking-tight">
@@ -57,7 +40,7 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Feature Section: Community Board */}
+      {/* Community Board Section */}
       <section className="max-w-4xl mx-auto">
         <div className="text-center mb-10 border-t border-[#E6E0D8] pt-10">
           <h2 className="text-3xl font-bold text-[#3B2316] mb-3">
@@ -69,9 +52,15 @@ export function HomePage() {
         </div>
 
         <div className="grid md:grid-cols-1 gap-8">
-          <PostForm onAddPost={handleAddPost} />
+          <PostForm onAddPost={addPost} />
 
-          <PostList posts={posts} onRemovePost={handleRemovePost} />
+          {isLoading ? (
+            <p className="text-center">Loading posts...</p>
+          ) : error ? (
+            <p className="text-center text-red-600">{error}</p>
+          ) : (
+            <PostList posts={posts} onRemovePost={removePost} />
+          )}
         </div>
       </section>
     </main>

@@ -1,11 +1,30 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PostForm } from "../home/PostForm";
 import { PostList } from "../home/PostList";
-import { usePosts } from "../../hooks/usePosts";
+import type { CommunityPost } from "../home/types/communitypost";
 
 export function HomePage() {
   // Initial dummy state to show the list functionality
-  const { posts, addPost, removePost, isLoading } = usePosts();
+  const [posts, setPosts] = useState<CommunityPost[]>([
+    {
+      id: "1",
+      author: "Team Hortons",
+      content:
+        "Welcome to our new community board! Let us know what you think about our menu.",
+      timestamp: new Date(),
+    },
+  ]);
+
+  // Handler for adding elements
+  const handleAddPost = (newPost: CommunityPost) => {
+    setPosts((prevPosts) => [newPost, ...prevPosts]);
+  };
+
+  // Handler for removing elements
+  const handleRemovePost = (idToDelete: string) => {
+    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== idToDelete));
+  };
 
   return (
     <main id="main" className="mx-auto max-w-6xl px-5 py-10">
@@ -50,16 +69,9 @@ export function HomePage() {
         </div>
 
         <div className="grid md:grid-cols-1 gap-8">
-          {/* I.3: Component invokes custom hook methods */}
-          <PostForm onAddPost={addPost} />
+          <PostForm onAddPost={handleAddPost} />
 
-          {isLoading ? (
-            <div className="text-center py-10 text-gray-500">
-              Loading community posts...
-            </div>
-          ) : (
-            <PostList posts={posts} onRemovePost={removePost} />
-          )}
+          <PostList posts={posts} onRemovePost={handleRemovePost} />
         </div>
       </section>
     </main>

@@ -110,6 +110,43 @@ The following Kanban items were completed or contributed to during this sprint:
   - Fan Luo: Home Page  
   - Justin Xia: Menu Page  
   - Yunfei Wu: Order Page
+ 
+## Sprint 3 Kanban Contributions
+
+The following Kanban items were completed or contributed to during this sprint:
+
+- **T.1: Hook Definition(s) (P0)**  
+  *Contributors:* Team
+
+- **T.2: Service Definition(s) (P0)**  
+  *Contributors:* Team
+
+- **T.4: Shared-page-state Refactor (P1)**  
+  *Contributor:* Yunfei Wu
+
+- **I.1: Repository Definition(s) and Integration (P0)**  
+  *Contributors:*  
+  - Fan Luo: src/repositories/communityPostRepository.ts 
+  - Justin Xia: src/repositories/menuReviewRepository.ts
+  - Yunfei Wu: src/repositories/menuItemRepository.ts
+
+- **I.2: Test Data (P1)**  
+  *Contributors:*  
+  - Fan Luo: src/testData/communityPostsTestData.ts 
+  - Justin Xia: src/testData/menuReviewsTestData.ts
+  - Yunfei Wu: src/testData/menuItemsTestData.ts
+
+- **I.3: New / Refactored Component(s) (P2)**  
+  *Contributors:*  
+  - Fan Luo: src/hooks/useCommunityPosts.ts
+  - Justin Xia: src/hooks/useMenuReviews.ts
+  - Yunfei Wu: src/hooks/useMenuItems.ts
+
+- **I.4: Architectural Layout Document (P2)**  
+  *Contributors:*  
+  - Fan Luo: docs/architecture-FL.md
+  - Justin Xia: docs/architecture-JX.md
+  - Yunfei Wu: docs/architecture-yunfei.md
 
 ## License
 

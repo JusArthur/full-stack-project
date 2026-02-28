@@ -1,20 +1,18 @@
 import { useMemo, useState } from "react";
 import type { OrderItem } from "../orders/types/order";
 import { OrderItemRow } from "../orders/OrderItemRow";
-
-type PresetItem = {
-  id: string;
-  name: string;
-  price: number;
-};
-
-const presetItems: PresetItem[] = [
-  { id: "coffee", name: "Cawfee", price: 2.49 },
-  { id: "donut", name: "Team Bits", price: 1.79 },
-  { id: "sandwich", name: "Breakfast Sandwitch", price: 4.99 },
-];
+import { useMenuItems } from "../../hooks/useMenuItems";
 
 export function OrdersPage() {
+  /**
+   * Sprint 3 (I.3 - Yunfei)
+   * Uses hook -> repository architecture:
+   * - useMenuItems (hook) manages UI presentation state and derives filtered menu items
+   * - menuItemRepository (repository) supplies menu data (test data now, API later)
+   * Why: Orders and Menu pages share the same menu source without prop drilling.
+   */
+  const { filteredItems, isLoading, error } = useMenuItems();
+
   // I.2 Form state
   const [customerName, setCustomerName] = useState<string>("");
   const [pickupNotes, setPickupNotes] = useState<string>("");
@@ -31,12 +29,12 @@ export function OrdersPage() {
     return orderItems.reduce((sum, item) => sum + item.price, 0);
   }, [orderItems]);
 
-  const handleAddPreset = (preset: PresetItem) => {
+  const handleAddMenuItem = (item: { id: number; name: string; price: number }) => {
     setOrderItems((oldItems) => {
       const newItem: OrderItem = {
-        id: `${preset.id}-${crypto.randomUUID()}`,
-        name: preset.name,
-        price: preset.price,
+        id: `${item.id}-${crypto.randomUUID()}`,
+        name: item.name,
+        price: item.price,
       };
       return [...oldItems, newItem];
     });
@@ -49,9 +47,7 @@ export function OrdersPage() {
   return (
     <main id="main" className="mx-auto max-w-6xl px-5 py-10">
       <h1 className="text-2xl font-extrabold">Orders</h1>
-      <p className="mt-2 text-black/70">
-        What would you like today?
-      </p>
+      <p className="mt-2 text-black/70">What would you like today?</p>
 
       <div className="mt-8 grid gap-8 md:grid-cols-2">
         {/* I.2 Form Component */}
@@ -106,22 +102,39 @@ export function OrdersPage() {
         <section className="rounded bg-white p-5 shadow">
           <h2 className="text-lg font-bold">Order Items</h2>
 
+          {/* Sprint 3: Add from Menu (hook -> repository) */}
           <div className="mt-4 flex flex-wrap gap-2">
-            {presetItems.map((preset) => (
-              <button
-                key={preset.id}
-                type="button"
-                onClick={() => handleAddPreset(preset)}
-                className="rounded bg-[#C8102E] px-3 py-2 text-sm font-semibold text-white hover:bg-[#a50d25]"
-              >
-                Add {preset.name}
-              </button>
-            ))}
+            {isLoading ? (
+              <p className="text-sm text-black/60">Loading menu items...</p>
+            ) : error ? (
+              <p className="text-sm font-semibold text-red-700">{error}</p>
+            ) : (
+              filteredItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() =>
+                    handleAddMenuItem({
+                      id: item.id,
+                      name: item.name,
+                      price: item.price,
+                    })
+                  }
+                  className="rounded bg-[#C8102E] px-3 py-2 text-sm font-semibold text-white hover:bg-[#a50d25]"
+                >
+                  Add {item.name}
+                </button>
+              ))
+            )}
           </div>
 
           <ul className="mt-5 space-y-3">
             {orderItems.map((item) => (
-              <OrderItemRow key={item.id} item={item} onRemove={handleRemoveItem} />
+              <OrderItemRow
+                key={item.id}
+                item={item}
+                onRemove={handleRemoveItem}
+              />
             ))}
           </ul>
 

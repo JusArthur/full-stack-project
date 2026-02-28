@@ -1,7 +1,9 @@
-import { useCart } from "../layout/CartContext";
+import { useCart } from "../layout/useCart";
+import { cartService } from "../../services/cartService";
 
 export function CartDrawer() {
-  const { cartItems, isCartOpen, setIsCartOpen, updateQuantity, totalPrice } = useCart();
+  const { cartItems, isCartOpen, setIsCartOpen, updateQuantity } = useCart();
+  const totalPrice = cartService.getTotalPrice(cartItems);
 
   if (!isCartOpen) return null;
 

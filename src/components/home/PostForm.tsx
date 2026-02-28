@@ -1,8 +1,7 @@
 import { useState } from "react";
-import type { CommunityPost } from "./types/communitypost";
 
 interface PostFormProps {
-  onAddPost: (post: CommunityPost) => void;
+  onAddPost: (author: string, content: string) => Promise<string | null>;
 }
 
 export function PostForm({ onAddPost }: PostFormProps) {
@@ -10,28 +9,18 @@ export function PostForm({ onAddPost }: PostFormProps) {
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic validation
-    if (!author.trim() || !content.trim()) {
-      setError("Please fill in both fields.");
-      return;
+    const err = await onAddPost(author, content);
+
+    if (err) {
+      setError(err);
+    } else {
+      setAuthor("");
+      setContent("");
+      setError("");
     }
-
-    const newPost: CommunityPost = {
-      id: crypto.randomUUID(),
-      author: author.trim(),
-      content: content.trim(),
-      timestamp: new Date(),
-    };
-
-    onAddPost(newPost);
-
-    // Reset form
-    setAuthor("");
-    setContent("");
-    setError("");
   };
 
   return (

@@ -13,7 +13,7 @@ export function useMenuReviews(menuItemId?: number) {
     async function fetchReviews() {
       try {
         setIsLoading(true);
-        // Fetch specific item reviews if ID is provided, otherwise fetch all
+        // Fetch specific item reviews if an ID was passed, otherwise fetch all
         const data = menuItemId 
             ? await menuReviewRepository.getByMenuItemId(menuItemId)
             : await menuReviewRepository.getAll();
@@ -37,11 +37,10 @@ export function useMenuReviews(menuItemId?: number) {
     fetchReviews();
 
     return () => {
-      isMounted = false; // Cleanup function to prevent state updates on unmounted components
+      isMounted = false;
     };
   }, [menuItemId]);
 
-  // Calculate the average dynamically based on the database response
   const averageRating = reviews.length > 0 
     ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length 
     : 0;

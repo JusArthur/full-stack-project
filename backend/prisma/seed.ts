@@ -10,17 +10,10 @@ async function main() {
   await prisma.menuItem.deleteMany();
 
   console.log("Extracting existing test data...");
-  
-  // Dynamically extract the arrays regardless of what your teammate named the exported variables
   const menuItems = Object.values(itemsData).find(val => Array.isArray(val)) as any[] || [];
   const menuReviews = Object.values(reviewsData).find(val => Array.isArray(val)) as any[] || [];
 
-  if (menuItems.length === 0) {
-    throw new Error("No array found in menuItemsTestData.");
-  }
-
-  console.log("Seeding database with original test data...");
-
+  console.log("Anchoring items in database to support review foreign keys...");
   for (const item of menuItems) {
     await prisma.menuItem.create({
       data: {
@@ -32,6 +25,7 @@ async function main() {
     });
   }
 
+  console.log("Seeding reviews...");
   for (const review of menuReviews) {
     await prisma.menuReview.create({
       data: {
@@ -45,7 +39,7 @@ async function main() {
     });
   }
 
-  console.log(`Successfully seeded ${menuItems.length} items and ${menuReviews.length} reviews.`);
+  console.log(`Successfully seeded ${menuReviews.length} reviews attached to ${menuItems.length} anchor items.`);
 }
 
 main()

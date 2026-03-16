@@ -1,48 +1,50 @@
 import { useState, useEffect } from "react";
 import { menuReviewRepository } from "../repositories/menuReviewRepository";
-import { menuReviewService } from "../services/menuReviewService";
 import type { MenuReview } from "../components/menu/types/menuReview";
 
-/**
- * Hook to manage menu review state, interactions, and calculations.
- * Returns: reviews array, averageRating number, and addReview function.
- */
 export function useMenuReviews(menuItemId?: number) {
   const [reviews, setReviews] = useState<MenuReview[]>([]);
-  const [averageRating, setAverageRating] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      const data = menuItemId
-        ? await menuReviewRepository.getByMenuItemId(menuItemId)
-        : await menuReviewRepository.getAll();
-      
-      setReviews(data);
-      setAverageRating(menuReviewService.calculateAverageRating(data));
-    };
+    let isMounted = true;
+
+    async function fetchReviews() {
+      try {
+        setIsLoading(true);
+        // Fetch specific item reviews if ID is provided, otherwise fetch all
+        const data = menuItemId 
+            ? await menuReviewRepository.getByMenuItemId(menuItemId)
+            : await menuReviewRepository.getAll();
+        
+        if (isMounted) {
+          setReviews(data);
+          setError(null);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError("Failed to load reviews from database.");
+          console.error(err);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
     fetchReviews();
+
+    return () => {
+      isMounted = false; // Cleanup function to prevent state updates on unmounted components
+    };
   }, [menuItemId]);
 
-  const addReview = async (author: string, rating: number, comment: string, itemId: number): Promise<string | null> => {
-    const error = menuReviewService.validateReview(rating, comment);
-    if (error) return error;
+  // Calculate the average dynamically based on the database response
+  const averageRating = reviews.length > 0 
+    ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length 
+    : 0;
 
-    const newReview: MenuReview = {
-      id: crypto.randomUUID(),
-      menuItemId: itemId,
-      author,
-      rating,
-      comment,
-      date: new Date()
-    };
-    
-    const saved = await menuReviewRepository.create(newReview);
-    const updatedList = [saved, ...reviews];
-    
-    setReviews(updatedList);
-    setAverageRating(menuReviewService.calculateAverageRating(updatedList));
-    return null;
-  };
-
-  return { reviews, averageRating, addReview };
+  return { reviews, averageRating, isLoading, error };
 }

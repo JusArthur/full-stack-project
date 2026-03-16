@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Change the provider from "sqlite" to "postgresql" for production viability
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model MenuItem {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  reviews     MenuReview[]
+}
+
+model MenuReview {
+  id         String   @id @default(uuid())
+  author     String
+  rating     Int
+  comment    String
+  date       DateTime @default(now())
+  menuItemId Int
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+}

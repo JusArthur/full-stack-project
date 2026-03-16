@@ -50,7 +50,7 @@ export const menuController = {
       if (!author || !rating || !comment || !menuItemId) {
         return res.status(400).json({ error: "Missing required fields" });
       }
-      const review: Array<string = await menuService.createReview({ author, rating, comment, menuItemId });
+      const review: Array<string> = await menuService.createReview({ author, rating, comment, menuItemId });
       res.status(201).json(review);
     } catch (error) {
       res.status(500).json({ error: "Failed to create review" });

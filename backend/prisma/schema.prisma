@@ -24,3 +24,21 @@ model MenuReview {
   menuItemId Int
   menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
 }
+
+model Order {
+  id           Int         @id @default(autoincrement())
+  customerName String
+  pickupNotes  String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  items        OrderItem[]
+}
+
+model OrderItem {
+  id        String @id @default(uuid())
+  orderId   Int
+  menuItemId Int
+  name      String
+  price     Float
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}

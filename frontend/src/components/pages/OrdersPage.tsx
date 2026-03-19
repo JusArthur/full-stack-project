@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
-import type { OrderItem } from "../orders/types/order";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { CurrentOrder, OrderItem } from "../orders/types/order";
 import { OrderItemRow } from "../orders/OrderItemRow";
 import { useMenuItems } from "../../hooks/useMenuItems";
+import { orderRepository } from "../../repositories/orderRepository";
 
 export function OrdersPage() {
   /**
@@ -13,12 +14,14 @@ export function OrdersPage() {
    */
   const { filteredItems, isLoading, error } = useMenuItems();
 
-  // I.2 Form state
   const [customerName, setCustomerName] = useState<string>("");
   const [pickupNotes, setPickupNotes] = useState<string>("");
-
-  // I.3 List state
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+
+  const [isOrderLoading, setIsOrderLoading] = useState<boolean>(true);
+  const [orderError, setOrderError] = useState<string | null>(null);
+
+  const hasLoadedOrder = useRef(false);
 
   const nameError =
     customerName.trim().length > 0 && customerName.trim().length < 3
@@ -29,13 +32,60 @@ export function OrdersPage() {
     return orderItems.reduce((sum, item) => sum + item.price, 0);
   }, [orderItems]);
 
+  useEffect(() => {
+    async function loadCurrentOrder() {
+      try {
+        setIsOrderLoading(true);
+        setOrderError(null);
+
+        const currentOrder = await orderRepository.getCurrent();
+
+        setCustomerName(currentOrder.customerName);
+        setPickupNotes(currentOrder.pickupNotes);
+        setOrderItems(currentOrder.items);
+      } catch {
+        setOrderError("Failed to load current order.");
+      } finally {
+        setIsOrderLoading(false);
+        hasLoadedOrder.current = true;
+      }
+    }
+
+    void loadCurrentOrder();
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoadedOrder.current) {
+      return;
+    }
+
+    async function saveCurrentOrder() {
+      const currentOrder: CurrentOrder = {
+        customerName,
+        pickupNotes,
+        items: orderItems,
+      };
+
+      try {
+        await orderRepository.saveCurrent(currentOrder);
+        setOrderError(null);
+      } catch {
+        setOrderError("Failed to save current order.");
+      }
+    }
+
+    void saveCurrentOrder();
+  }, [customerName, pickupNotes, orderItems]);
+
   const handleAddMenuItem = (item: { id: number; name: string; price: number }) => {
     setOrderItems((oldItems) => {
       const newItem: OrderItem = {
-        id: `${item.id}-${crypto.randomUUID()}`,
+        id: crypto.randomUUID(),
+        menuItemId: item.id,
         name: item.name,
         price: item.price,
       };
+
       return [...oldItems, newItem];
     });
   };
@@ -49,8 +99,15 @@ export function OrdersPage() {
       <h1 className="text-2xl font-extrabold">Orders</h1>
       <p className="mt-2 text-black/70">What would you like today?</p>
 
+      {isOrderLoading ? (
+        <p className="mt-6 text-sm text-black/60">Loading current order...</p>
+      ) : null}
+
+      {orderError ? (
+        <p className="mt-4 text-sm font-semibold text-red-700">{orderError}</p>
+      ) : null}
+
       <div className="mt-8 grid gap-8 md:grid-cols-2">
-        {/* I.2 Form Component */}
         <section className="rounded bg-white p-5 shadow">
           <h2 className="text-lg font-bold">Customer Info</h2>
 
@@ -60,7 +117,7 @@ export function OrdersPage() {
               <input
                 type="text"
                 value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
+                onChange={(event) => setCustomerName(event.target.value)}
                 className="mt-1 w-full rounded border border-black/20 p-2"
                 placeholder="At least 3 characters"
               />
@@ -75,7 +132,7 @@ export function OrdersPage() {
               <span className="block text-sm font-semibold">Pickup Notes</span>
               <textarea
                 value={pickupNotes}
-                onChange={(e) => setPickupNotes(e.target.value)}
+                onChange={(event) => setPickupNotes(event.target.value)}
                 className="mt-1 w-full rounded border border-black/20 p-2"
                 rows={3}
                 placeholder="e.g., No sugar, extra napkins..."
@@ -83,7 +140,6 @@ export function OrdersPage() {
             </label>
           </div>
 
-          {/* Live Preview (real-time update) */}
           <div className="mt-6 rounded border border-black/10 bg-[#F7F3E9] p-4">
             <h3 className="font-bold">Live Summary</h3>
             <p className="mt-2">
@@ -98,11 +154,9 @@ export function OrdersPage() {
           </div>
         </section>
 
-        {/* I.3 Element Addition/Removal */}
         <section className="rounded bg-white p-5 shadow">
           <h2 className="text-lg font-bold">Order Items</h2>
 
-          {/* Sprint 3: Add from Menu (hook -> repository) */}
           <div className="mt-4 flex flex-wrap gap-2">
             {isLoading ? (
               <p className="text-sm text-black/60">Loading menu items...</p>

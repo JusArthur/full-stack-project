@@ -1,0 +1,25 @@
+import express from 'express';
+import cors from 'cors';
+import menuRoutes from './routes/menuRoutes.js';
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Allow all origins in production serverless environment, restrict to localhost in dev
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' ? '*' : 'http://localhost:5173'
+}));
+app.use(express.json());
+
+app.use('/api/menu', menuRoutes);
+
+// Vercel serverless functions do not use app.listen. 
+// We only start the server manually if we are running locally.
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Back-end server running on port http://localhost:${PORT}`);
+  });
+}
+
+// Export the app for Vercel's serverless Node builder
+export default app;

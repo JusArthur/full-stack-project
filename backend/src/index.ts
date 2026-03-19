@@ -16,6 +16,10 @@ app.use(
 
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.json({ message: "Backend is running" });
+});
+
 app.use('/api/menu', menuRoutes);
 app.use("/api/orders", orderRoutes);
 

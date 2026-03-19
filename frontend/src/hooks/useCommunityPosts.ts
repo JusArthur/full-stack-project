@@ -25,19 +25,24 @@ export function useCommunityPosts() {
   }, []);
 
   const addPost = async (author: string, content: string) => {
-    // 1. Validate using the Service
+    // 1. Validate (Frontend Service)
     const validationError = communityPostService.validatePost(author, content);
     if (validationError) return validationError;
 
-    // 2. Format using the Service
-    const newPost = communityPostService.createNewPost(author, content);
+    try {
+      // 2. Save to Database (Repository sends just the text to the Backend)
+      // The backend will create the ID and Timestamp, and send the complete object back!
+      const savedPost = await communityPostRepository.create({
+        author: author.trim(),
+        content: content.trim(),
+      });
 
-    // 3. Save using the Repository
-    const savedPost = await communityPostRepository.create(newPost);
-
-    // 4. Update UI state
-    setPosts((prev) => [savedPost, ...prev]);
-    return null;
+      // 3. Update UI
+      setPosts((prev) => [savedPost, ...prev]);
+      return null;
+    } catch (err) {
+      return "Failed to connect to the server.";
+    }
   };
 
   const removePost = async (id: string) => {

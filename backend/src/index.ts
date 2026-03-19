@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/menu", menuRoutes);
 app.use("/api/orders", orderRoutes);
-app.use("/api/community-posts", communityPostRoutes);
+app.use("/api/communityPosts", communityPostRoutes);
 // Vercel serverless functions do not use app.listen.
 // We only start the server manually if we are running locally.
 if (process.env.NODE_ENV !== "production") {

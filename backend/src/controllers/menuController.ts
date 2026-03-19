@@ -15,7 +15,8 @@ export const menuController = {
   getItemById: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const item: Array<Record<string, any>> = await menuService.getItemById(Number(id));
+      // Changed from Array<Record<string, any>> to any or MenuItem | null
+      const item = await menuService.getItemById(Number(id)); 
       if (!item) {
         return res.status(404).json({ error: "Item not found" });
       }
@@ -27,7 +28,7 @@ export const menuController = {
 
   getAllReviews: async (req: Request, res: Response) => {
     try {
-      const reviews: Array<string> = await menuService.getAllReviews();
+      const reviews = await menuService.getAllReviews(); // Let TS infer the type or use any[]
       res.json(reviews);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch reviews" });
@@ -37,7 +38,7 @@ export const menuController = {
   getReviewsByItemId: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const reviews: Array<string> = await menuService.getReviewsByItemId(Number(id));
+      const reviews = await menuService.getReviewsByItemId(Number(id));
       res.json(reviews);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch item reviews" });
@@ -50,7 +51,7 @@ export const menuController = {
       if (!author || !rating || !comment || !menuItemId) {
         return res.status(400).json({ error: "Missing required fields" });
       }
-      const review: Array<string> = await menuService.createReview({ author, rating, comment, menuItemId });
+      const review = await menuService.createReview({ author, rating, comment, menuItemId });
       res.status(201).json(review);
     } catch (error) {
       res.status(500).json({ error: "Failed to create review" });

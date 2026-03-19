@@ -1,17 +1,27 @@
 import express from 'express';
 import cors from 'cors';
 import menuRoutes from './routes/menuRoutes.js';
+import orderRoutes from "./routes/orderRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Allow all origins in production serverless environment, restrict to localhost in dev
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? '*' : 'http://localhost:5173'
-}));
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "production" ? "*" : "http://localhost:5173",
+  })
+);
+
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.json({ message: "Backend is running" });
+});
+
 app.use('/api/menu', menuRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Vercel serverless functions do not use app.listen. 
 // We only start the server manually if we are running locally.

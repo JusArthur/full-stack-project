@@ -1,6 +1,8 @@
 import type { CommunityPost } from "../components/home/types/communitypost";
 
-const API_URL = "http://localhost:3000/api/communityPosts";
+const API_URL = import.meta.env.PROD
+  ? "/api/communityPosts"
+  : "http://localhost:3000/api/communityPosts";
 
 export const communityPostRepository = {
   async getAll(): Promise<CommunityPost[]> {

@@ -5,13 +5,6 @@ import { useMenuItems } from "../../hooks/useMenuItems";
 import { orderRepository } from "../../repositories/orderRepository";
 
 export function OrdersPage() {
-  /**
-   * Sprint 3 (I.3 - Yunfei)
-   * Uses hook -> repository architecture:
-   * - useMenuItems (hook) manages UI presentation state and derives filtered menu items
-   * - menuItemRepository (repository) supplies menu data (test data now, API later)
-   * Why: Orders and Menu pages share the same menu source without prop drilling.
-   */
   const { filteredItems, isLoading, error } = useMenuItems();
 
   const [customerName, setCustomerName] = useState<string>("");
@@ -94,6 +87,37 @@ export function OrdersPage() {
     setOrderItems((oldItems) => oldItems.filter((item) => item.id !== id));
   };
 
+  // NEW: Function to clear all items
+  const handleRemoveAllItems = () => {
+    setOrderItems([]);
+  };
+
+  const handleSubmitOrder = async () => {
+    if (orderItems.length === 0) {
+      alert("Please add at least one item to your order.");
+      return;
+    }
+    if (customerName.trim().length < 3) {
+      alert("Please provide a valid customer name.");
+      return;
+    }
+
+    try {
+      await orderRepository.submitOrder({
+        customerName,
+        pickupNotes,
+        items: orderItems,
+      });
+      
+      // Clear the form and draft after successful submission
+      setCustomerName("");
+      setPickupNotes("");
+      setOrderItems([]);
+      alert("Order submitted successfully!");
+    } catch (error) {
+      setOrderError("Failed to submit the final order.");
+    }
+  };
   return (
     <main id="main" className="mx-auto max-w-6xl px-5 py-10">
       <h1 className="text-2xl font-extrabold">Orders</h1>
@@ -109,6 +133,7 @@ export function OrdersPage() {
 
       <div className="mt-8 grid gap-8 md:grid-cols-2">
         <section className="rounded bg-white p-5 shadow">
+          {/* ... Customer Info section remains exactly the same ... */}
           <h2 className="text-lg font-bold">Customer Info</h2>
 
           <div className="mt-4 space-y-4">
@@ -152,10 +177,43 @@ export function OrdersPage() {
             </p>
             <p className="mt-3 font-bold">Total: ${total.toFixed(2)}</p>
           </div>
+          <div className="mt-6 rounded border border-black/10 bg-[#F7F3E9] p-4">
+            <h3 className="font-bold">Live Summary</h3>
+            <p className="mt-2">
+              <span className="font-semibold">Name:</span>{" "}
+              {customerName.trim() ? customerName : "—"}
+            </p>
+            <p className="mt-1">
+              <span className="font-semibold">Notes:</span>{" "}
+              {pickupNotes.trim() ? pickupNotes : "—"}
+            </p>
+            <p className="mt-3 font-bold">Total: ${total.toFixed(2)}</p>
+            
+            {/* NEW SUBMIT BUTTON HERE */}
+            <button
+              onClick={handleSubmitOrder}
+              disabled={orderItems.length === 0 || customerName.trim().length < 3}
+              className="mt-4 w-full rounded bg-[#C8102E] py-2 font-bold text-white disabled:opacity-50 hover:bg-[#a50d25]"
+            >
+              Submit Order
+            </button>
+          </div>
         </section>
 
         <section className="rounded bg-white p-5 shadow">
-          <h2 className="text-lg font-bold">Order Items</h2>
+          {/* UPDATED: Order Items Header with Delete All Button */}
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold">Order Items</h2>
+            {orderItems.length > 0 && (
+              <button
+                type="button"
+                onClick={handleRemoveAllItems}
+                className="text-sm font-semibold text-[#C8102E] hover:underline"
+              >
+                Delete All
+              </button>
+            )}
+          </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
             {isLoading ? (
@@ -183,7 +241,8 @@ export function OrdersPage() {
           </div>
 
           <ul className="mt-5 space-y-3">
-            {orderItems.map((item) => (
+            {/* UPDATED: Slice array to only render the first 5 items */}
+            {orderItems.slice(0, 5).map((item) => (
               <OrderItemRow
                 key={item.id}
                 item={item}
@@ -191,6 +250,13 @@ export function OrdersPage() {
               />
             ))}
           </ul>
+
+          {/* NEW: Display message if there are more than 5 items */}
+          {orderItems.length > 5 && (
+            <p className="mt-3 text-sm font-medium italic text-black/60">
+              ...and {orderItems.length - 5} more item{orderItems.length - 5 !== 1 ? 's' : ''} in your order.
+            </p>
+          )}
 
           {orderItems.length === 0 ? (
             <p className="mt-4 text-sm text-black/60">

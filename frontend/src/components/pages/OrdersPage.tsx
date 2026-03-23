@@ -92,32 +92,6 @@ export function OrdersPage() {
     setOrderItems([]);
   };
 
-  const handleSubmitOrder = async () => {
-    if (orderItems.length === 0) {
-      alert("Please add at least one item to your order.");
-      return;
-    }
-    if (customerName.trim().length < 3) {
-      alert("Please provide a valid customer name.");
-      return;
-    }
-
-    try {
-      await orderRepository.submitOrder({
-        customerName,
-        pickupNotes,
-        items: orderItems,
-      });
-      
-      // Clear the form and draft after successful submission
-      setCustomerName("");
-      setPickupNotes("");
-      setOrderItems([]);
-      alert("Order submitted successfully!");
-    } catch (error) {
-      setOrderError("Failed to submit the final order.");
-    }
-  };
   return (
     <main id="main" className="mx-auto max-w-6xl px-5 py-10">
       <h1 className="text-2xl font-extrabold">Orders</h1>
@@ -176,27 +150,6 @@ export function OrdersPage() {
               {pickupNotes.trim() ? pickupNotes : "—"}
             </p>
             <p className="mt-3 font-bold">Total: ${total.toFixed(2)}</p>
-          </div>
-          <div className="mt-6 rounded border border-black/10 bg-[#F7F3E9] p-4">
-            <h3 className="font-bold">Live Summary</h3>
-            <p className="mt-2">
-              <span className="font-semibold">Name:</span>{" "}
-              {customerName.trim() ? customerName : "—"}
-            </p>
-            <p className="mt-1">
-              <span className="font-semibold">Notes:</span>{" "}
-              {pickupNotes.trim() ? pickupNotes : "—"}
-            </p>
-            <p className="mt-3 font-bold">Total: ${total.toFixed(2)}</p>
-            
-            {/* NEW SUBMIT BUTTON HERE */}
-            <button
-              onClick={handleSubmitOrder}
-              disabled={orderItems.length === 0 || customerName.trim().length < 3}
-              className="mt-4 w-full rounded bg-[#C8102E] py-2 font-bold text-white disabled:opacity-50 hover:bg-[#a50d25]"
-            >
-              Submit Order
-            </button>
           </div>
         </section>
 

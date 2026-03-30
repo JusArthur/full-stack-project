@@ -110,7 +110,7 @@ The following Kanban items were completed or contributed to during this sprint:
   - Fan Luo: Home Page  
   - Justin Xia: Menu Page  
   - Yunfei Wu: Order Page
- 
+
 ## Sprint 3 Kanban Contributions
 
 The following Kanban items were completed or contributed to during this sprint:
@@ -126,13 +126,13 @@ The following Kanban items were completed or contributed to during this sprint:
 
 - **I.1: Repository Definition(s) and Integration (P0)**  
   *Contributors:*  
-  - Fan Luo: src/repositories/communityPostRepository.ts 
+  - Fan Luo: src/repositories/communityPostRepository.ts
   - Justin Xia: src/repositories/menuReviewRepository.ts
   - Yunfei Wu: src/repositories/menuItemRepository.ts
 
 - **I.2: Test Data (P1)**  
   *Contributors:*  
-  - Fan Luo: src/testData/communityPostsTestData.ts 
+  - Fan Luo: src/testData/communityPostsTestData.ts
   - Justin Xia: src/testData/menuReviewsTestData.ts
   - Yunfei Wu: src/testData/menuItemsTestData.ts
 
@@ -147,6 +147,46 @@ The following Kanban items were completed or contributed to during this sprint:
   - Fan Luo: docs/architecture-FL.md
   - Justin Xia: docs/architecture-JX.md
   - Yunfei Wu: docs/architecture-yunfei.md
+
+## Sprint 4 Kanban Contributions
+
+The following Kanban items were completed or contributed to during this sprint:
+
+- **T.1: Back-end App Initialization (P0)**  
+  *Contributors:* Team
+
+- **T.2: Development SQL Database (P0)**  
+  *Contributors:* Team
+
+- **T.3: Prisma Installation and Client Initialization (P1)**  
+  *Contributors:* Team
+
+- **T.4: Back-end CORS Configuration (P2)**  
+  *Contributors:* Team
+
+- **I.1: Back-end Resource Endpoint (P1)**  
+  *Contributors:*
+  - Fan Luo: Home Page / Community Post Endpoints  
+  - Justin Xia: Menu Page / Review Endpoints  
+  - Yunfei Wu: Order Page / Menu Item Endpoints  
+
+- **I.2: Resource Database Schema (P1)**  
+  *Contributors:*
+  - Fan Luo: Community Post Model & Migrations  
+  - Justin Xia: Menu Review Model & Migrations  
+  - Yunfei Wu: Menu Item Model & Migrations  
+
+- **I.3: Front-end Repository sends requests to back-end (P2)**  
+  *Contributors:*
+  - Fan Luo: Home Page Repository Refactor  
+  - Justin Xia: Menu Page Repository Refactor  
+  - Yunfei Wu: Order Page Repository Refactor  
+
+- **I.4: Application State Persistence (P2)**  
+  *Contributors:*
+  - Fan Luo: Home Page Persistence  
+  - Justin Xia: Menu Page Persistence  
+  - Yunfei Wu: Order Page Persistence
 
 ## License
 

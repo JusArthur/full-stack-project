@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model MenuItem {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  reviews     MenuReview[]
+}
+
+model MenuReview {
+  id         String   @id @default(uuid())
+  author     String
+  rating     Int
+  comment    String
+  date       DateTime @default(now())
+  menuItemId Int
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+}
+
+model Order {
+  id           Int         @id @default(autoincrement())
+  customerName String
+  pickupNotes  String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  items        OrderItem[]
+}
+
+model OrderItem {
+  id        String @id @default(uuid())
+  orderId   Int
+  menuItemId Int
+  name      String
+  price     Float
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model CommunityPost {
+  id        String   @id @default(uuid())
+  author    String
+  content   String
+  timestamp DateTime @default(now())
+}

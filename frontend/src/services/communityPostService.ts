@@ -1,4 +1,4 @@
-import type { CommunityPost } from "../components/home/types/communitypost";
+// import type { CommunityPost } from "../components/home/types/communitypost";
 
 export const communityPostService = {
   validatePost(author: string, content: string): string | null {
@@ -9,14 +9,5 @@ export const communityPostService = {
       return "Name must be at least 2 characters.";
     }
     return null;
-  },
-
-  createNewPost(author: string, content: string): CommunityPost {
-    return {
-      id: crypto.randomUUID(),
-      author: author.trim(),
-      content: content.trim(),
-      timestamp: new Date(),
-    };
   },
 };

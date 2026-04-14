@@ -43,3 +43,10 @@ model OrderItem {
   price     Float
   order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
+
+model CommunityPost {
+  id        String   @id @default(uuid())
+  author    String
+  content   String
+  timestamp DateTime @default(now())
+}

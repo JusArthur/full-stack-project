@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import { menuService } from '../services/menuService.js';
-import { RequireAuthProp } from '@clerk/clerk-sdk-node';
+import { Request, Response } from "express";
+import { menuService } from "../services/menuService.js";
+import { RequireAuthProp } from "@clerk/clerk-sdk-node";
 
 export const menuController = {
   getAllItems: async (req: Request, res: Response) => {
@@ -15,7 +15,7 @@ export const menuController = {
   getItemById: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const item = await menuService.getItemById(Number(id)); 
+      const item = await menuService.getItemById(Number(id));
       if (!item) {
         return res.status(404).json({ error: "Item not found" });
       }
@@ -47,8 +47,8 @@ export const menuController = {
   createReview: async (req: RequireAuthProp<Request>, res: Response) => {
     try {
       const { author, rating, comment, menuItemId } = req.body;
-      const userId = req.auth.userId; 
-      
+      const userId = req.auth.userId;
+
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
@@ -57,10 +57,18 @@ export const menuController = {
         return res.status(400).json({ error: "Missing required fields" });
       }
 
-      const review = await menuService.createReview({ userId, author, rating, comment, menuItemId });
+      const review = await menuService.createReview({
+        userId,
+        author,
+        rating,
+        comment,
+        menuItemId,
+      });
+      
       res.status(201).json(review);
     } catch (error) {
+      console.error("[MenuReview Create Error]:", error);
       res.status(500).json({ error: "Failed to create review" });
     }
-  }
+  },
 };

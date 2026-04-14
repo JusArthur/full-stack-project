@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useCart } from "../layout/useCart";
 import { CartDrawer } from "../cart/CartDrawer"; 
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
 type NavItem = {
   id: string;
@@ -42,12 +43,11 @@ export function Navigation() {
             ))}
           </ul>
 
-
           <div className="flex items-center gap-4">
             <button 
               type="button" 
               onClick={() => setIsCartOpen(true)}
-              className="relative p-2 hover:bg-white/10 rounded-full transition-colors"
+              className="relative p-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
               aria-label={`Open cart with ${cartCount} items`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -62,12 +62,23 @@ export function Navigation() {
               )}
             </button>
 
-            <button type="button" className="hidden sm:block rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#C8102E] hover:bg-[#F7F3E9]">
-              Sign in
-            </button>
+            {/* Desktop Auth State */}
+            <div className="hidden sm:block">
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button type="button" className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#C8102E] hover:bg-[#F7F3E9] cursor-pointer transition-colors">
+                    Sign in
+                  </button>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton afterSignOutUrl="/" />
+              </SignedIn>
+            </div>
           </div>
         </div>
 
+        {/* Mobile Navigation */}
         <div className="border-t border-white/15 px-5 py-2 sm:hidden">
           <ul className="m-0 flex list-none flex-col gap-2 p-0">
             {navItems.map((item) => (
@@ -79,6 +90,23 @@ export function Navigation() {
                 </NavLink>
               </li>
             ))}
+            
+            {/* Mobile Auth State */}
+            <li className="mt-2 border-t border-white/10 pt-2">
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button type="button" className="w-full text-left rounded px-2 py-2 text-sm font-semibold no-underline text-inherit hover:bg-white/10 cursor-pointer">
+                    Sign in
+                  </button>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <div className="px-2 py-2 flex items-center gap-2 text-sm font-semibold">
+                  <UserButton afterSignOutUrl="/" />
+                  <span>Account</span>
+                </div>
+              </SignedIn>
+            </li>
           </ul>
         </div>
       </nav>

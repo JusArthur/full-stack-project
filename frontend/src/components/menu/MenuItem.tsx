@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useCart } from "../layout/useCart";
 import { useMenuReviews } from "../../hooks/useMenuReviews";
 import type { MenuItem as MenuItemType } from "./types/menu";
+import { SignedIn, SignedOut, SignInButton, useUser } from "@clerk/clerk-react";
 
 interface MenuItemProps {
   item: MenuItemType;
@@ -16,30 +17,31 @@ const MenuItem: React.FC<MenuItemProps> = ({
 }) => {
   const { addToCart } = useCart();
   const { averageRating, reviews, addReview } = useMenuReviews(item.id);
+  const { user } = useUser();
   
-  // State for the review form toggle and inputs
+  // Removed author state since we will get it from Clerk
   const [isReviewing, setIsReviewing] = useState(false);
-  const [author, setAuthor] = useState("");
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!author.trim() || !comment.trim()) return;
+    if (!comment.trim() || !user) return;
 
     setIsSubmitting(true);
     
+    // Automatically retrieve the user's name from Clerk profile
+    const authorName = user.fullName || user.firstName || user.username || "Anonymous Reviewer";
+    
     const success = await addReview({
-      author: author.trim(),
+      author: authorName,
       rating: Number(rating),
       comment: comment.trim(),
       menuItemId: item.id
     });
 
     if (success) {
-      // Reset form and close it on success
-      setAuthor("");
       setRating(5);
       setComment("");
       setIsReviewing(false);
@@ -69,14 +71,25 @@ const MenuItem: React.FC<MenuItemProps> = ({
             <span>{"★".repeat(Math.round(averageRating)) + "☆".repeat(5 - Math.round(averageRating))}</span>
             <span className="text-gray-500 text-xs ml-1">({reviews.length} reviews)</span>
             
-            {/* Toggle Review Form Button */}
+            {/* Conditional Authentication Rendering */}
             {variant === 'default' && (
-              <button 
-                onClick={() => setIsReviewing(!isReviewing)}
-                className="ml-3 text-xs font-semibold text-amber-600 hover:text-amber-800 underline"
-              >
-                {isReviewing ? "Cancel" : "Write a Review"}
-              </button>
+              <>
+                <SignedIn>
+                  <button 
+                    onClick={() => setIsReviewing(!isReviewing)}
+                    className="ml-3 text-xs font-semibold text-amber-600 hover:text-amber-800 underline"
+                  >
+                    {isReviewing ? "Cancel" : "Write a Review"}
+                  </button>
+                </SignedIn>
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <button className="ml-3 text-xs font-semibold text-gray-400 hover:text-gray-600 underline">
+                      Sign in to review
+                    </button>
+                  </SignInButton>
+                </SignedOut>
+              </>
             )}
           </div>
         </div>
@@ -99,24 +112,13 @@ const MenuItem: React.FC<MenuItemProps> = ({
         </div>
       </div>
 
-      {/* Review Submission Form */}
+      {/* Review Submission Form (Simplified since we don't need the Author input anymore) */}
       {isReviewing && (
         <form onSubmit={handleReviewSubmit} className="mt-4 p-4 bg-white border border-amber-100 rounded-lg shadow-sm w-full md:w-2/3">
           <h4 className="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wider">Leave a Review</h4>
           
           <div className="flex gap-4 mb-3">
-            <div className="flex-1">
-              <label className="block text-xs font-semibold text-gray-600 mb-1">Name</label>
-              <input 
-                type="text" 
-                required
-                value={author}
-                onChange={(e) => setAuthor(e.target.value)}
-                className="w-full text-sm p-2 border border-gray-300 rounded focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                placeholder="Your Name"
-              />
-            </div>
-            <div className="w-24">
+            <div className="w-full">
               <label className="block text-xs font-semibold text-gray-600 mb-1">Rating</label>
               <select 
                 value={rating}

@@ -47,7 +47,7 @@ export const menuController = {
   createReview: async (req: Request, res: Response) => {
     try {
       const { author, rating, comment, menuItemId } = req.body;
-
+      
       const authRequest = req as RequireAuthProp<Request>;
       const userId = authRequest.auth.userId;
 
@@ -69,9 +69,7 @@ export const menuController = {
       
       res.status(201).json(review);
     } catch (error) {
-      console.error("\n=== DATABASE CRASH ===");
-      console.error(error);
-      console.error("======================\n");
+      console.error("[MenuReview Create Error]:", error);
       res.status(500).json({ error: "Failed to create review" });
     }
   },

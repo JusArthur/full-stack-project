@@ -19,8 +19,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
   const { averageRating, reviews, addReview } = useMenuReviews(item.id);
   const { user } = useUser();
   
-  // Removed author state since we will get it from Clerk
   const [isReviewing, setIsReviewing] = useState(false);
+  const [showReviews, setShowReviews] = useState(false); // New state to toggle reviews list
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,7 +31,6 @@ const MenuItem: React.FC<MenuItemProps> = ({
 
     setIsSubmitting(true);
     
-    // Automatically retrieve the user's name from Clerk profile
     const authorName = user.fullName || user.firstName || user.username || "Anonymous Reviewer";
     
     const success = await addReview({
@@ -71,7 +70,6 @@ const MenuItem: React.FC<MenuItemProps> = ({
             <span>{"★".repeat(Math.round(averageRating)) + "☆".repeat(5 - Math.round(averageRating))}</span>
             <span className="text-gray-500 text-xs ml-1">({reviews.length} reviews)</span>
             
-            {/* Conditional Authentication Rendering */}
             {variant === 'default' && (
               <>
                 <SignedIn>
@@ -81,6 +79,15 @@ const MenuItem: React.FC<MenuItemProps> = ({
                   >
                     {isReviewing ? "Cancel" : "Write a Review"}
                   </button>
+                  {/* New View Reviews toggle button */}
+                  {reviews.length > 0 && (
+                    <button 
+                      onClick={() => setShowReviews(!showReviews)}
+                      className="ml-3 text-xs font-semibold text-blue-600 hover:text-blue-800 underline"
+                    >
+                      {showReviews ? "Hide Reviews" : "View Reviews"}
+                    </button>
+                  )}
                 </SignedIn>
                 <SignedOut>
                   <SignInButton mode="modal">
@@ -112,7 +119,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
         </div>
       </div>
 
-      {/* Review Submission Form (Simplified since we don't need the Author input anymore) */}
+      {/* Review Submission Form */}
       {isReviewing && (
         <form onSubmit={handleReviewSubmit} className="mt-4 p-4 bg-white border border-amber-100 rounded-lg shadow-sm w-full md:w-2/3">
           <h4 className="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wider">Leave a Review</h4>
@@ -152,6 +159,29 @@ const MenuItem: React.FC<MenuItemProps> = ({
             {isSubmitting ? "Submitting..." : "Post Review"}
           </button>
         </form>
+      )}
+
+      {/* New: Display List of Reviews */}
+      {showReviews && reviews.length > 0 && (
+        <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-inner w-full">
+          <h4 className="text-xs font-bold text-gray-700 mb-3 uppercase tracking-wider">Guest Reviews</h4>
+          <ul className="space-y-4">
+            {reviews.map((rev) => (
+              <li key={rev.id} className="border-b border-gray-200 last:border-0 pb-3">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-sm font-bold text-gray-800">{rev.author}</span>
+                  <span className="text-yellow-500 text-xs">
+                    {"★".repeat(rev.rating) + "☆".repeat(5 - rev.rating)}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 italic">"{rev.comment}"</p>
+                <p className="text-[10px] text-gray-400 mt-1">
+                  {new Date(rev.date).toLocaleDateString()}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </li>
   );

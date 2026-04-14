@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import menuRoutes from './routes/menuRoutes.js';
 import orderRoutes from "./routes/orderRoutes.js";
-
+import 'dotenv/config';
 const app = express();
 const PORT = process.env.PORT || 3000;
 

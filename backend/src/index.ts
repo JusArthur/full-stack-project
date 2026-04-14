@@ -5,7 +5,6 @@ import orderRoutes from "./routes/orderRoutes.js";
 import communityPostRoutes from "./routes/communityPostRoutes.js";
 
 import 'dotenv/config';
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 

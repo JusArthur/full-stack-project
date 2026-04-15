@@ -1,4 +1,4 @@
-import { prisma } from '../prisma.js';
+import { prisma } from "../prisma.js";
 
 export const menuService = {
   getAllItems: async () => {
@@ -11,20 +11,24 @@ export const menuService = {
 
   getAllReviews: async () => {
     return prisma.menuReview.findMany({
-      orderBy: { date: 'desc' }
+      orderBy: { date: "desc" },
     });
   },
 
   getReviewsByItemId: async (menuItemId: number) => {
-    return prisma.menuReview.findMany({ 
+    return prisma.menuReview.findMany({
       where: { menuItemId },
-      orderBy: { date: 'desc' }
+      orderBy: { date: "desc" },
     });
   },
 
   createReview: async (data: {
-     author: string; rating: number; comment: string; menuItemId: number }
-    ) => {
+    userId: string;
+    author: string;
+    rating: number;
+    comment: string;
+    menuItemId: number;
+  }) => {
     return prisma.menuReview.create({ data });
-  }
+  },
 };

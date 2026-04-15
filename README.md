@@ -36,6 +36,36 @@ This project is a restaurant web app inspired by the Tim Hortons website, create
    npm run dev
    ```
 
+## Local Setup
+
+To run this application locally, you must configure both the frontend and backend environments.
+
+### 1. Environment Variables
+
+You must create `.env` files in both the frontend and backend directories.
+
+**Backend (`/backend/.env`):**
+
+```env
+DATABASE_URL="your_postgresql_database_connection_string"
+CLERK_SECRET_KEY="your_clerk_secret_key"
+
+### 2. Data setup
+Once your environment variables are configured, open a terminal in the /backend directory and run the following commands to initialize your local database:
+
+# Sync the Prisma schema with your database
+npx prisma db push
+
+# Seed the database with the initial menu items
+npm run db:seed
+
+### 3. Running the Application
+Open two separate terminal windows:
+
+- In the backend directory, run: npm run dev
+
+- In the frontend directory, run: npm run dev
+
 ---
 
 ## Sprint 1 Kanban Contributions

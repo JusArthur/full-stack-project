@@ -8,6 +8,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  const clearCart = () => {
+    setCartItems([]);
+  };
+  const cartCount = cartService.getCartCount(cartItems);
+  const totalPrice = cartService.getTotalPrice(cartItems);
   /**
    * Sprint 3 (I.3/T.2 - Yunfei)
    * Cart business logic lives in cartService (add/update/remove/totals).
@@ -27,9 +32,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCartItems((prev) => cartService.removeItem(prev, itemId));
   };
 
-  const cartCount = cartService.getCartCount(cartItems);
-  const totalPrice = cartService.getTotalPrice(cartItems);
-
   return (
     <CartContext.Provider
       value={{
@@ -37,6 +39,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addToCart,
         removeFromCart,
         updateQuantity,
+        clearCart, 
         isCartOpen,
         setIsCartOpen,
         cartCount,

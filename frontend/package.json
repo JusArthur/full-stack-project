@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.61.4",
     "@tailwindcss/vite": "^4.1.18",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -18,8 +19,8 @@
     "tailwindcss": "^4.1.18"
   },
   "optionalDependencies": {
-    "lightningcss-linux-x64-gnu": "^1.29.1",
-    "@tailwindcss/oxide-linux-x64-gnu": "^4.1.18"
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.1.18",
+    "lightningcss-linux-x64-gnu": "^1.29.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

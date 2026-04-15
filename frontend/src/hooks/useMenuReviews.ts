@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { menuReviewRepository } from "../repositories/menuReviewRepository";
 import type { MenuReview } from "../components/menu/types/menuReview";
+import { useAuth } from "@clerk/clerk-react"; // Import Clerk hook
 
 export function useMenuReviews(menuItemId?: number) {
   const [reviews, setReviews] = useState<MenuReview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Extract the getToken function from Clerk
+  const { getToken } = useAuth();
 
   useEffect(() => {
     let isMounted = true;
@@ -40,11 +44,19 @@ export function useMenuReviews(menuItemId?: number) {
     };
   }, [menuItemId]);
 
-  // NEW: Function to submit a new review to the database and update local state
   const addReview = async (newReview: Omit<MenuReview, 'id' | 'date'>) => {
     try {
-      const createdReview = await menuReviewRepository.create(newReview);
-      // Prepend the new review to the local state so the UI updates instantly
+      // 1. Get the token securely from Clerk
+      const token = await getToken();
+      
+      if (!token) {
+        console.error("No authentication token available");
+        return false;
+      }
+
+      // 2. Pass the token to the repository alongside the review data
+      const createdReview = await menuReviewRepository.create(newReview, token);
+      
       setReviews((prevReviews) => [createdReview, ...prevReviews]);
       return true;
     } catch (err) {

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { SignedIn, SignedOut, SignInButton, useAuth } from "@clerk/clerk-react";
 import type { CurrentOrder, OrderItem } from "../orders/types/order";
 import { OrderItemRow } from "../orders/OrderItemRow";
 import { useMenuItems } from "../../hooks/useMenuItems";
@@ -6,12 +7,13 @@ import { orderRepository } from "../../repositories/orderRepository";
 
 export function OrdersPage() {
   const { filteredItems, isLoading, error } = useMenuItems();
+  const { getToken, isSignedIn, isLoaded } = useAuth();
 
   const [customerName, setCustomerName] = useState<string>("");
   const [pickupNotes, setPickupNotes] = useState<string>("");
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
 
-  const [isOrderLoading, setIsOrderLoading] = useState<boolean>(true);
+  const [isOrderLoading, setIsOrderLoading] = useState<boolean>(false);
   const [orderError, setOrderError] = useState<string | null>(null);
 
   const hasLoadedOrder = useRef(false);
@@ -27,17 +29,35 @@ export function OrdersPage() {
 
   useEffect(() => {
     async function loadCurrentOrder() {
+      if (!isLoaded) {
+        return;
+      }
+
+      if (!isSignedIn) {
+        hasLoadedOrder.current = true;
+        setIsOrderLoading(false);
+        setOrderError(null);
+        return;
+      }
+
       try {
         setIsOrderLoading(true);
         setOrderError(null);
 
-        const currentOrder = await orderRepository.getCurrent();
+        const token = await getToken();
+
+        if (!token) {
+          setOrderError("Failed to load your saved order.");
+          return;
+        }
+
+        const currentOrder = await orderRepository.getCurrent(token);
 
         setCustomerName(currentOrder.customerName);
         setPickupNotes(currentOrder.pickupNotes);
         setOrderItems(currentOrder.items);
       } catch {
-        setOrderError("Failed to load current order.");
+        setOrderError("Failed to load your saved order.");
       } finally {
         setIsOrderLoading(false);
         hasLoadedOrder.current = true;
@@ -45,10 +65,10 @@ export function OrdersPage() {
     }
 
     void loadCurrentOrder();
-  }, []);
+  }, [getToken, isSignedIn, isLoaded]);
 
   useEffect(() => {
-    if (!hasLoadedOrder.current) {
+    if (!isLoaded || !hasLoadedOrder.current || !isSignedIn) {
       return;
     }
 
@@ -60,15 +80,22 @@ export function OrdersPage() {
       };
 
       try {
-        await orderRepository.saveCurrent(currentOrder);
+        const token = await getToken();
+
+        if (!token) {
+          setOrderError("Failed to save your order.");
+          return;
+        }
+
+        await orderRepository.saveCurrent(token, currentOrder);
         setOrderError(null);
       } catch {
-        setOrderError("Failed to save current order.");
+        setOrderError("Failed to save your order.");
       }
     }
 
     void saveCurrentOrder();
-  }, [customerName, pickupNotes, orderItems]);
+  }, [customerName, pickupNotes, orderItems, getToken, isSignedIn, isLoaded]);
 
   const handleAddMenuItem = (item: { id: number; name: string; price: number }) => {
     setOrderItems((oldItems) => {
@@ -87,7 +114,6 @@ export function OrdersPage() {
     setOrderItems((oldItems) => oldItems.filter((item) => item.id !== id));
   };
 
-  // NEW: Function to clear all items
   const handleRemoveAllItems = () => {
     setOrderItems([]);
   };
@@ -97,8 +123,32 @@ export function OrdersPage() {
       <h1 className="text-2xl font-extrabold">Orders</h1>
       <p className="mt-2 text-black/70">What would you like today?</p>
 
+      <div className="mt-4 rounded border border-black/10 bg-[#F7F3E9] p-4">
+        <SignedIn>
+          <p className="text-sm text-black/70">
+            Your order is saved to your signed-in account.
+          </p>
+        </SignedIn>
+
+        <SignedOut>
+          <p className="text-sm text-black/70">
+            You can build an order as a guest, but you need to sign in to save it.
+          </p>
+          <div className="mt-3">
+            <SignInButton mode="modal">
+              <button
+                type="button"
+                className="rounded bg-[#C8102E] px-4 py-2 text-sm font-semibold text-white hover:bg-[#a50d25]"
+              >
+                Sign in to save your order
+              </button>
+            </SignInButton>
+          </div>
+        </SignedOut>
+      </div>
+
       {isOrderLoading ? (
-        <p className="mt-6 text-sm text-black/60">Loading current order...</p>
+        <p className="mt-6 text-sm text-black/60">Loading your saved order...</p>
       ) : null}
 
       {orderError ? (
@@ -107,7 +157,6 @@ export function OrdersPage() {
 
       <div className="mt-8 grid gap-8 md:grid-cols-2">
         <section className="rounded bg-white p-5 shadow">
-          {/* ... Customer Info section remains exactly the same ... */}
           <h2 className="text-lg font-bold">Customer Info</h2>
 
           <div className="mt-4 space-y-4">
@@ -154,10 +203,9 @@ export function OrdersPage() {
         </section>
 
         <section className="rounded bg-white p-5 shadow">
-          {/* UPDATED: Order Items Header with Delete All Button */}
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold">Order Items</h2>
-            {orderItems.length > 0 && (
+            {orderItems.length > 0 ? (
               <button
                 type="button"
                 onClick={handleRemoveAllItems}
@@ -165,7 +213,7 @@ export function OrdersPage() {
               >
                 Delete All
               </button>
-            )}
+            ) : null}
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
@@ -194,7 +242,6 @@ export function OrdersPage() {
           </div>
 
           <ul className="mt-5 space-y-3">
-            {/* UPDATED: Slice array to only render the first 5 items */}
             {orderItems.slice(0, 5).map((item) => (
               <OrderItemRow
                 key={item.id}
@@ -204,12 +251,12 @@ export function OrdersPage() {
             ))}
           </ul>
 
-          {/* NEW: Display message if there are more than 5 items */}
-          {orderItems.length > 5 && (
+          {orderItems.length > 5 ? (
             <p className="mt-3 text-sm font-medium italic text-black/60">
-              ...and {orderItems.length - 5} more item{orderItems.length - 5 !== 1 ? 's' : ''} in your order.
+              ...and {orderItems.length - 5} more item
+              {orderItems.length - 5 !== 1 ? "s" : ""} in your order.
             </p>
-          )}
+          ) : null}
 
           {orderItems.length === 0 ? (
             <p className="mt-4 text-sm text-black/60">

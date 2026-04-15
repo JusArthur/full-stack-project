@@ -17,6 +17,7 @@ model MenuItem {
 
 model MenuReview {
   id         String   @id @default(uuid())
+  userId     String  
   author     String
   rating     Int
   comment    String

@@ -2,7 +2,10 @@
     "name": "team-hortons-monorepo",
     "private": true,
     "workspaces": [
-      "frontend",
-      "backend"
-    ]
-  }
+        "frontend",
+        "backend"
+    ],
+    "dependencies": {
+        "clerk": "^0.8.3"
+    }
+}

@@ -30,6 +30,7 @@ async function main() {
     await prisma.menuReview.create({
       data: {
         id: review.id.toString(),
+        userId: "system_seeded_user",
         author: review.author,
         rating: review.rating,
         comment: review.comment,

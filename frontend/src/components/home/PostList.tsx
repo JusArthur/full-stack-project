@@ -6,7 +6,7 @@ interface PostListProps {
   user: any;
 }
 
-const ADMIN_USER_ID = "user_3CQ68G3b3gnl2JiqmpZWGW22miu";
+const ADMIN_IDS = ["user_3CQ68G3b3gnl2JiqmpZWGW22miu"];
 
 export default function PostList({ posts, deletePost, user }: PostListProps) {
   if (posts.length === 0) {
@@ -22,8 +22,8 @@ export default function PostList({ posts, deletePost, user }: PostListProps) {
   return (
     <div className="space-y-6 text-left">
       {posts.map((post) => {
+        const isAdmin = user && ADMIN_IDS.includes(user.id);
         const isOwner = user && user.id === post.userId;
-        const isAdmin = user && user.id === ADMIN_USER_ID;
         const canDelete = isOwner || isAdmin;
 
         return (

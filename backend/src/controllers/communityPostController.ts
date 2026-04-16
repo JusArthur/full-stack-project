@@ -34,34 +34,26 @@ export const communityPostController = {
       const { id } = req.params;
       const requesterId = (req as any).auth?.userId;
 
-      // 1. If not signed in at all, block them
-      if (!requesterId) {
-        return res
-          .status(401)
-          .json({ error: "You must be logged in to delete a post." });
-      }
+      if (!requesterId) return res.status(401).json({ error: "Unauthorized" });
 
-      // 2. Find the post
+      // 1. Define the same array here
+      const ADMIN_IDS = ["user_YOUR_ID_1", "user_TEAMMATE_ID"];
+
       const post = await communityPostService.getPostById(id);
-      if (!post) {
-        return res.status(404).json({ error: "Post not found." });
-      }
+      if (!post) return res.status(404).json({ error: "Not found" });
 
-      // 3. YOUR ADMIN ID: You can replace this string with your actual Clerk user_id later
-      const ADMIN_USER_ID = "user_YOUR_ADMIN_CLERK_ID_HERE";
+      // 2. Update the logic to check the array
+      const isAdmin = ADMIN_IDS.includes(requesterId);
+      const isOwner = post.userId === requesterId;
 
-      // 4. Check rules: Are they the admin? OR Are they the owner?
-      if (requesterId === ADMIN_USER_ID || requesterId === post.userId) {
+      if (isAdmin || isOwner) {
         await communityPostService.deletePost(id);
         return res.status(204).send();
       }
 
-      // 5. If they aren't admin and don't own it, block them
-      return res
-        .status(403)
-        .json({ error: "You do not have permission to delete this post." });
+      return res.status(403).json({ error: "Forbidden" });
     } catch (error) {
-      res.status(500).json({ error: "Failed to delete post" });
+      res.status(500).json({ error: "Server Error" });
     }
   },
 };

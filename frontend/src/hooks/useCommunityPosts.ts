@@ -1,54 +1,70 @@
 import { useState, useEffect } from "react";
-import type { CommunityPost } from "../components/home/types/communitypost";
 import { communityPostRepository } from "../repositories/communityPostRepository";
 import { communityPostService } from "../services/communityPostService";
+import type { CommunityPost } from "../components/home/types/communitypost";
+import { useAuth, useUser } from "@clerk/clerk-react"; // Import Clerk hooks
 
 export function useCommunityPosts() {
   const [posts, setPosts] = useState<CommunityPost[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // 1. Initialize Clerk tools
+  const { getToken } = useAuth();
+  const { user } = useUser();
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
   const fetchPosts = async () => {
-    setIsLoading(true);
     try {
+      setIsLoading(true);
       const data = await communityPostRepository.getAll();
       setPosts(data);
-    } catch {
-      setError("Failed to fetch posts");
+      setError(null);
+    } catch (err) {
+      setError("Failed to load posts.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    void fetchPosts();
-  }, []);
-
   const addPost = async (author: string, content: string) => {
-    // 1. Validate (Frontend Service)
-    const validationError = communityPostService.validatePost(author, content);
-    if (validationError) return validationError;
-
     try {
-      // 2. Save to Database (Repository sends just the text to the Backend)
-      // The backend will create the ID and Timestamp, and send the complete object back!
-      const savedPost = await communityPostRepository.create({
-        author: author.trim(),
-        content: content.trim(),
-      });
+      // Still validate using the service
+      communityPostService.validatePost({ author, content });
 
-      // 3. Update UI
-      setPosts((prev) => [savedPost, ...prev]);
-      return null;
-    } catch (err) {
-      return "Failed to connect to the server.";
+      // 2. Grab the token (will be null if they are a guest)
+      const token = await getToken();
+
+      // Pass the token to the repository
+      const newPost = await communityPostRepository.create(
+        { author, content },
+        token,
+      );
+
+      // Update UI with the new post at the top
+      setPosts([newPost, ...posts]);
+    } catch (err: any) {
+      setError(err.message);
+      throw err;
     }
   };
 
-  const removePost = async (id: string) => {
-    await communityPostRepository.delete(id);
-    setPosts((prev) => prev.filter((p) => p.id !== id));
+  const deletePost = async (id: string) => {
+    try {
+      const token = await getToken();
+      if (!token) throw new Error("You must be logged in to delete.");
+
+      await communityPostRepository.delete(id, token);
+      setPosts(posts.filter((post) => post.id !== id));
+    } catch (err: any) {
+      setError(err.message);
+      throw err;
+    }
   };
 
-  return { posts, isLoading, error, addPost, removePost };
+  // 3. Return the user object so the UI can know who is logged in
+  return { posts, isLoading, error, addPost, deletePost, user };
 }

@@ -1,78 +1,95 @@
 import { useState } from "react";
 
 interface PostFormProps {
-  onAddPost: (author: string, content: string) => Promise<string | null>;
+  addPost: (author: string, content: string) => Promise<void>;
+  user: any;
 }
 
-export function PostForm({ onAddPost }: PostFormProps) {
-  const [author, setAuthor] = useState("");
+export default function PostForm({ addPost, user }: PostFormProps) {
+  const defaultName = user ? user.firstName || user.username || "Member" : "";
+
+  const [author, setAuthor] = useState(defaultName);
   const [content, setContent] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
-    const err = await onAddPost(author, content);
+    const finalAuthor = user ? defaultName : `${author.trim()} (Guest)`;
 
-    if (err) {
-      setError(err);
-    } else {
-      setAuthor("");
+    try {
+      await addPost(finalAuthor, content);
       setContent("");
-      setError("");
+      if (!user) setAuthor("");
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md border border-[#E6E0D8] mb-8">
-      <h3 className="text-[#3B2316] text-xl font-bold mb-4">
-        Leave a Note for the Team
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-6 md:p-8 rounded-3xl shadow-lg border border-[#E6E0D8] mb-10 text-left"
+    >
+      <h3 className="text-2xl font-bold text-[#3B2316] mb-5">
+        Leave a Message
       </h3>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
+      {error && (
+        <div className="bg-red-50 text-red-600 p-3 rounded-xl mb-5 border border-red-100">
+          {error}
+        </div>
+      )}
+
+      {!user && (
+        <div className="mb-5">
           <label
             htmlFor="author"
-            className="block text-sm font-semibold text-[#3B2316] mb-1"
+            className="block text-[#3B2316] font-semibold mb-2"
           >
-            Your Name
+            Name:
           </label>
           <input
-            type="text"
             id="author"
+            type="text"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
-            className="w-full p-2 border border-[#E6E0D8] rounded focus:outline-none focus:border-[#C8102E] focus:ring-1 focus:ring-[#C8102E]"
-            placeholder="Enter your name"
+            placeholder="Guest Name"
+            className="w-full p-3 border border-[#E6E0D8] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C8102E] bg-gray-50 transition-all"
           />
         </div>
+      )}
 
-        <div>
-          <label
-            htmlFor="content"
-            className="block text-sm font-semibold text-[#3B2316] mb-1"
-          >
-            Message
-          </label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            rows={3}
-            className="w-full p-2 border border-[#E6E0D8] rounded focus:outline-none focus:border-[#C8102E] focus:ring-1 focus:ring-[#C8102E]"
-            placeholder="What's on your mind?"
-          />
-        </div>
+      {user && (
+        <p className="mb-5 text-[#3B2316] opacity-80 bg-gray-50 p-3 rounded-xl border border-[#E6E0D8]">
+          Posting as: <span className="font-bold">{defaultName}</span>
+        </p>
+      )}
 
-        {error && <p className="text-[#C8102E] text-sm font-medium">{error}</p>}
-
-        <button
-          type="submit"
-          className="bg-[#C8102E] text-white px-6 py-2 rounded-full font-bold hover:bg-[#A60C25] transition-colors cursor-pointer"
+      <div className="mb-6">
+        <label
+          htmlFor="content"
+          className="block text-[#3B2316] font-semibold mb-2"
         >
-          Post Message
-        </button>
-      </form>
-    </div>
+          Message:
+        </label>
+        <textarea
+          id="content"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="What's on your mind?"
+          rows={4}
+          className="w-full p-3 border border-[#E6E0D8] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C8102E] bg-gray-50 transition-all resize-none"
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="w-full bg-[#C8102E] text-white text-lg font-bold px-8 py-4 rounded-full hover:bg-[#A60C25] transition-all transform hover:scale-[1.02] shadow-md"
+      >
+        Submit Post
+      </button>
+    </form>
   );
 }

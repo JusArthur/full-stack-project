@@ -3,4 +3,5 @@ export interface CommunityPost {
   author: string;
   content: string;
   timestamp: Date;
+  userId?: string | null;
 }

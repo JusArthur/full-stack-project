@@ -37,7 +37,7 @@ export const communityPostController = {
       if (!requesterId) return res.status(401).json({ error: "Unauthorized" });
 
       // 1. Define the same array here
-      const ADMIN_IDS = ["user_YOUR_ID_1", "user_TEAMMATE_ID"];
+      const ADMIN_IDS = ["user_3CQ68G3b3gnl2JiqmpZWGW22miu"];
 
       const post = await communityPostService.getPostById(id);
       if (!post) return res.status(404).json({ error: "Not found" });

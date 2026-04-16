@@ -50,4 +50,5 @@ model CommunityPost {
   author    String
   content   String
   timestamp DateTime @default(now())
+  userId    String?
 }

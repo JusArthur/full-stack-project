@@ -6,7 +6,7 @@ interface PostListProps {
   user: any;
 }
 
-const ADMIN_USER_ID = "user_YOUR_ADMIN_CLERK_ID_HERE";
+const ADMIN_USER_ID = "user_3CQ68G3b3gnl2JiqmpZWGW22miu";
 
 export default function PostList({ posts, deletePost, user }: PostListProps) {
   if (posts.length === 0) {

@@ -145,7 +145,7 @@ The following Kanban items were completed or contributed to during this sprint:
 
 The following Kanban items were completed or contributed to during this sprint:
 
-- **T.1: Hook Definition(s) (P0)**  
+- **T.1: Hook Definition(s) (P0)** 
   *Contributors:* Team
 
 - **T.2: Service Definition(s) (P0)**  
@@ -217,6 +217,40 @@ The following Kanban items were completed or contributed to during this sprint:
   - Fan Luo: Home Page Persistence  
   - Justin Xia: Menu Page Persistence  
   - Yunfei Wu: Order Page Persistence
+
+## Sprint 5 Kanban Contributions
+
+The following Kanban items were completed or contributed to during this sprint:
+
+- **T.1: Clerk Auth Setup (P0)** 
+  *Contributors:* Team
+
+- **T.2: Team Vercel Account/Management (P0)** 
+  *Contributors:* 
+  - Team
+  - Justin Xia: Owner
+
+- **T.3: Back-end User Management (P0)** 
+  *Contributors:*
+  - Team
+
+- **T.4: User Login/Registration (P2)** 
+  *Contributors:*
+  - Team
+
+- **T.5: Local Setup Instructions (P2)** 
+  *Contributors:*
+  - Fan
+
+- **I.1: Custom User-Associated Data and Session Management (P1)** 
+  *Contributors:*
+  - Fan Luo: Home Page / Community Post Endpoints  
+  - Justin Xia: Menu Page / Review Endpoints  
+  - Yunfei Wu: Order Page / Menu Item Endpoints 
+
+- **I.2: Project Retrospective (P2)** 
+  *Contributors:*
+  - Team
 
 ## License
 

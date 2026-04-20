@@ -28,6 +28,7 @@ model MenuReview {
 
 model Order {
   id           Int         @id @default(autoincrement())
+  userId       String?
   customerName String
   pickupNotes  String
   createdAt    DateTime    @default(now())
@@ -49,4 +50,5 @@ model CommunityPost {
   author    String
   content   String
   timestamp DateTime @default(now())
+  userId    String?
 }

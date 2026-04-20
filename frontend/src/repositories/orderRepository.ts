@@ -5,8 +5,12 @@ const API_BASE_URL = import.meta.env.PROD
   : "http://localhost:3000/api/orders";
 
 export const orderRepository = {
-  async getCurrent(): Promise<CurrentOrder> {
-    const response = await fetch(`${API_BASE_URL}/current`);
+  async getCurrent(token: string): Promise<CurrentOrder> {
+    const response = await fetch(`${API_BASE_URL}/current`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (!response.ok) {
       throw new Error("Failed to fetch current order");
@@ -21,11 +25,12 @@ export const orderRepository = {
     };
   },
 
-  async saveCurrent(order: CurrentOrder): Promise<CurrentOrder> {
+  async saveCurrent(token: string, order: CurrentOrder): Promise<CurrentOrder> {
     const response = await fetch(`${API_BASE_URL}/current`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(order),
     });

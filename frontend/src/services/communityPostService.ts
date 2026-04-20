@@ -1,12 +1,18 @@
-// import type { CommunityPost } from "../components/home/types/communitypost";
+// frontend/src/services/communityPostService.ts
 
 export const communityPostService = {
-  validatePost(author: string, content: string): string | null {
-    if (!author.trim() || !content.trim()) {
-      return "Please fill in both fields.";
+  validatePost({
+    author,
+    content,
+  }: {
+    author: string;
+    content: string;
+  }): string | null {
+    if (!author || author.trim().length < 2) {
+      return "Author name must be at least 2 characters long.";
     }
-    if (author.trim().length < 2) {
-      return "Name must be at least 2 characters.";
+    if (!content || content.trim().length < 1) {
+      return "Post content cannot be empty.";
     }
     return null;
   },

@@ -11,8 +11,11 @@ type SaveCurrentOrderInput = {
 };
 
 export const orderService = {
-  async getCurrentOrder() {
+  async getCurrentOrder(userId: string) {
     const existingOrder = await prisma.order.findFirst({
+      where: {
+        userId,
+      },
       orderBy: {
         updatedAt: "desc",
       },
@@ -24,8 +27,11 @@ export const orderService = {
     return existingOrder;
   },
 
-  async saveCurrentOrder(data: SaveCurrentOrderInput) {
+  async saveCurrentOrder(userId: string, data: SaveCurrentOrderInput) {
     const existingOrder = await prisma.order.findFirst({
+      where: {
+        userId,
+      },
       orderBy: {
         updatedAt: "desc",
       },
@@ -37,6 +43,7 @@ export const orderService = {
     if (!existingOrder) {
       const createdOrder = await prisma.order.create({
         data: {
+          userId,
           customerName: data.customerName,
           pickupNotes: data.pickupNotes,
           items: {

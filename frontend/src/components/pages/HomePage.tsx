@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { PostForm } from "../home/PostForm";
-import { PostList } from "../home/PostList";
+import PostForm from "../home/PostForm";
+import PostList from "../home/PostList";
 import { useCommunityPosts } from "../../hooks/useCommunityPosts";
 
 export function HomePage() {
@@ -8,7 +8,8 @@ export function HomePage() {
    * Using Hook-Service-Repository architecture.
    * The hook manages state, validation logic, and data access.
    */
-  const { posts, addPost, removePost, isLoading, error } = useCommunityPosts();
+  const { posts, isLoading, error, addPost, deletePost, user } =
+    useCommunityPosts();
 
   return (
     <main id="main" className="mx-auto max-w-6xl px-5 py-10">
@@ -52,14 +53,14 @@ export function HomePage() {
         </div>
 
         <div className="grid md:grid-cols-1 gap-8">
-          <PostForm onAddPost={addPost} />
+          <PostForm addPost={addPost} user={user} />
 
           {isLoading ? (
             <p className="text-center">Loading posts...</p>
           ) : error ? (
             <p className="text-center text-red-600">{error}</p>
           ) : (
-            <PostList posts={posts} onRemovePost={removePost} />
+            <PostList posts={posts} deletePost={deletePost} user={user} />
           )}
         </div>
       </section>

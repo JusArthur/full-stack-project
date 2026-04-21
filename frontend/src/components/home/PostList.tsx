@@ -2,47 +2,61 @@ import type { CommunityPost } from "./types/communitypost";
 
 interface PostListProps {
   posts: CommunityPost[];
-  onRemovePost: (id: string) => void;
+  deletePost: (id: string) => Promise<void>;
+  user: any;
 }
 
-export function PostList({ posts, onRemovePost }: PostListProps) {
+const ADMIN_IDS = ["user_3CQ68G3b3gnl2JiqmpZWGW22miu"];
+
+export default function PostList({ posts, deletePost, user }: PostListProps) {
   if (posts.length === 0) {
     return (
-      <div className="text-center py-8 text-[#3B2316] opacity-60 italic">
-        No messages yet. Be the first to post!
+      <div className="text-center p-10 bg-white rounded-3xl border border-[#E6E0D8] shadow-sm">
+        <p className="text-lg text-[#3B2316] opacity-70">
+          No posts yet. Be the first to say hello!
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-[#3B2316] text-xl font-bold mb-4">Community Board</h3>
-      <ul className="space-y-4">
-        {posts.map((post) => (
-          <li
+    <div className="space-y-6 text-left">
+      {posts.map((post) => {
+        const isAdmin = user && ADMIN_IDS.includes(user.id);
+        const isOwner = user && user.id === post.userId;
+        const canDelete = isOwner || isAdmin;
+
+        return (
+          <div
             key={post.id}
-            className="bg-white p-5 rounded-lg shadow-sm border border-[#E6E0D8] flex justify-between items-start group hover:shadow-md transition-all"
+            className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-[#E6E0D8] hover:shadow-md transition-shadow relative"
           >
-            <div className="flex-1 pr-4">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-bold text-[#3B2316]">{post.author}</span>
-                <span className="text-xs text-gray-500">
-                  • {post.timestamp.toLocaleDateString()}
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h4 className="text-xl font-bold text-[#3B2316]">
+                  {post.author}
+                </h4>
+                <span className="text-sm text-[#3B2316] opacity-60">
+                  {new Date(post.timestamp).toLocaleString()}
                 </span>
               </div>
-              <p className="text-[#3B2316] leading-relaxed">{post.content}</p>
+
+              {canDelete && (
+                <button
+                  onClick={() => deletePost(post.id)}
+                  className="text-sm font-bold text-[#C8102E] hover:text-white hover:bg-[#C8102E] border border-[#C8102E] px-4 py-1.5 rounded-full transition-colors focus:outline-none"
+                >
+                  Delete
+                </button>
+              )}
             </div>
 
-            <button
-              onClick={() => onRemovePost(post.id)}
-              className="text-gray-400 hover:text-[#C8102E] font-semibold text-sm px-2 py-1 rounded hover:bg-[#F7F3E9] transition-colors"
-              aria-label="Delete post"
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+            <p className="text-[#3B2316] opacity-90 whitespace-pre-wrap leading-relaxed text-lg">
+              {post.content}
+            </p>
+          </div>
+        );
+      })}
     </div>
   );
 }

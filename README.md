@@ -22,20 +22,6 @@ This project is a restaurant web app inspired by the Tim Hortons website, create
 
 ---
 
-## Getting Started
-
-1. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-2. Start the development server:
-
-   ```bash
-   npm run dev
-   ```
-
 ## Local Setup
 
 To run this application locally, you must configure both the frontend and backend environments.
@@ -49,22 +35,57 @@ You must create `.env` files in both the frontend and backend directories.
 ```env
 DATABASE_URL="your_postgresql_database_connection_string"
 CLERK_SECRET_KEY="your_clerk_secret_key"
+```
 
-### 2. Data setup
-Once your environment variables are configured, open a terminal in the /backend directory and run the following commands to initialize your local database:
+**Frontend (`/frontend/.env`):**
 
+```env
+VITE_CLERK_PUBLISHABLE_KEY="your_clerk_publishable_key"
+```
+
+### 2. Install Dependencies
+
+Before running the application, make sure you install the necessary packages for both sides of the project.
+
+Open a terminal in the `/backend` directory and run:
+
+```bash
+npm install
+```
+
+Then, open a terminal in the `/frontend` directory and run:
+
+```bash
+npm install
+```
+
+### 3. Data Setup
+
+Once your environment variables are configured and dependencies are installed, open a terminal in the `/backend` directory and run the following commands to initialize your local database:
+
+```bash
 # Sync the Prisma schema with your database
 npx prisma db push
 
 # Seed the database with the initial menu items
 npm run db:seed
+```
 
-### 3. Running the Application
-Open two separate terminal windows:
+### 4. Running the Application
 
-- In the backend directory, run: npm run dev
+To start the project, you will need to run the development servers for both the frontend and the backend simultaneously. Open two separate terminal windows:
 
-- In the frontend directory, run: npm run dev
+- In the **backend** directory, run:
+
+  ```bash
+  npm run dev
+  ```
+
+- In the **frontend** directory, run:
+
+  ```bash
+  npm run dev
+  ```
 
 ---
 
@@ -145,7 +166,7 @@ The following Kanban items were completed or contributed to during this sprint:
 
 The following Kanban items were completed or contributed to during this sprint:
 
-- **T.1: Hook Definition(s) (P0)**  
+- **T.1: Hook Definition(s) (P0)**
   *Contributors:* Team
 
 - **T.2: Service Definition(s) (P0)**  
@@ -217,6 +238,40 @@ The following Kanban items were completed or contributed to during this sprint:
   - Fan Luo: Home Page Persistence  
   - Justin Xia: Menu Page Persistence  
   - Yunfei Wu: Order Page Persistence
+
+## Sprint 5 Kanban Contributions
+
+The following Kanban items were completed or contributed to during this sprint:
+
+- **T.1: Clerk Auth Setup (P0)**
+  *Contributors:* Team
+
+- **T.2: Team Vercel Account/Management (P0)**
+  *Contributors:*
+  - Team
+  - Justin Xia: Owner
+
+- **T.3: Back-end User Management (P0)**
+  *Contributors:*
+  - Team
+
+- **T.4: User Login/Registration (P2)**
+  *Contributors:*
+  - Team
+
+- **T.5: Local Setup Instructions (P2)**
+  *Contributors:*
+  - Fan
+
+- **I.1: Custom User-Associated Data and Session Management (P1)**
+  *Contributors:*
+  - Fan Luo: Home Page / Community Post Endpoints  
+  - Justin Xia: Menu Page / Review Endpoints  
+  - Yunfei Wu: Order Page / Menu Item Endpoints
+
+- **I.2: Project Retrospective (P2)**
+  *Contributors:*
+  - Team
 
 ## License
 
